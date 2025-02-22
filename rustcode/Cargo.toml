@@ -1,0 +1,10 @@
+[package]
+name = "rustcode"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+godot = "0.2.3"
+
+[lib]
+crate-type = ["cdylib"]
