@@ -23,7 +23,8 @@ pub struct Server {
 impl Server {
     pub fn new() -> Self {
         let socket =
-            UdpSocket::bind(format!("127.0.0.1:{}", common::PORT)).expect("Could not bind socket!");
+            UdpSocket::bind(format!("0.0.0.0:{}", common::PORT)).expect("Could not bind socket!");
+            // UdpSocket::bind(format!("127.0.0.1:{}", common::PORT)).expect("Could not bind socket!");
         let current_time = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap();
