@@ -15,7 +15,7 @@ use tracing_subscriber::EnvFilter;
 pub struct Server {
     pub server: RenetServer,
     pub transport: NetcodeServerTransport,
-    pub players: HashMap<ClientId, Vec<>>,
+    pub players: HashMap<ClientId, String>,
     pub messages: Vec<common::Message>,
     pub visualizer: RenetServerVisualizer<240>,
 }
