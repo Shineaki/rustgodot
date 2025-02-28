@@ -17,8 +17,8 @@ pub struct Client {
 impl Client {
     pub fn new() -> Self {
         let client_socket =
-            UdpSocket::bind(format!("0.0.0.0:{}", 0)).expect("Could not bind socket!");
-            // UdpSocket::bind(format!("127.0.0.1:{}", 0)).expect("Could not bind socket!");
+            // UdpSocket::bind(format!("0.0.0.0:{}", 0)).expect("Could not bind socket!");
+            UdpSocket::bind(format!("127.0.0.1:{}", 0)).expect("Could not bind socket!");
         let current_time = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap();
@@ -30,8 +30,8 @@ impl Client {
                 protocol_id: common::PROTOCOL_ID,
                 client_id: 412,
                 server_addr: SocketAddr::new(
-                    IpAddr::V4(Ipv4Addr::new(4, 210, 230, 207)),
-                    // IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
+                    // IpAddr::V4(Ipv4Addr::new(4, 210, 230, 207)),
+                    IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
                     common::PORT as u16,
                 ),
                 user_data: None,
