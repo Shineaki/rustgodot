@@ -99,6 +99,7 @@ impl ISprite2D for Player {
 
             godot_print!("{:?}", cur_pos);
 
+            // TODO: handle client ID
             self.actions.push(common::Message::new(
                 412,
                 common::ActionType::Movement(common::Movement::new(

@@ -82,7 +82,7 @@ impl Server {
         {
             match bincode::options().deserialize::<common::Frame>(&raw_message) {
                 Ok(frame) => messages.extend(frame.messages),
-                Err(e) => tracing::warn!("Could not deserialize message!"),
+                Err(_) => tracing::warn!("Could not deserialize message!"),
             }
         }
 

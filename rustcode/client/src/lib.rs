@@ -1,16 +1,12 @@
 use std::{
     io,
     net::{IpAddr, Ipv4Addr, SocketAddr, UdpSocket},
-    thread,
     time::{Duration, SystemTime},
 };
 
-use bincode::Options;
-use common::Message;
 use renet::{ConnectionConfig, DefaultChannel, RenetClient};
 use renet_netcode::{ClientAuthentication, NetcodeClientTransport};
 use renet_visualizer::RenetClientVisualizer;
-use tracing_subscriber::EnvFilter;
 
 pub struct Client {
     pub client: RenetClient,
