@@ -12,3 +12,4 @@ tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 
 common = {path="../common"}
+ringbuffer = "0.15.0"

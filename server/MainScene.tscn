@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ia1o7w0vn65a"]
+
+[ext_resource type="Script" path="res://set_fps.gd" id="1_xa3h2"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_xa3h2")
+
+[node name="Server" type="Server" parent="."]

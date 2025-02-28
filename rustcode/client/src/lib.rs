@@ -50,8 +50,6 @@ impl Client {
     }
 
     pub fn update(&mut self, duration: Duration) -> Result<(), io::Error> {
-        tracing::debug!("tick");
-
         self.client.update(duration);
         self.transport.update(duration, &mut self.client).unwrap();
         // self.visualizer.u(&self.client);

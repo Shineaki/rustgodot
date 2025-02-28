@@ -1,22 +1,19 @@
 use std::{
     collections::HashMap,
-    io,
     net::UdpSocket,
-    thread,
     time::{Duration, SystemTime},
 };
 
 use bincode::Options;
-use renet::{ClientId, ConnectionConfig, DefaultChannel, RenetServer, ServerEvent};
-use renet_netcode::{NetcodeServerTransport, ServerAuthentication, ServerConfig};
+use renet::{ConnectionConfig, DefaultChannel, RenetServer, ServerEvent};
+use renet_netcode::{
+    NetcodeServerTransport, NetcodeTransportError, ServerAuthentication, ServerConfig,
+};
 use renet_visualizer::RenetServerVisualizer;
-use tracing_subscriber::EnvFilter;
 
 pub struct Server {
     pub server: RenetServer,
     pub transport: NetcodeServerTransport,
-    pub players: HashMap<ClientId, Vec<>>,
-    pub messages: Vec<common::Message>,
     pub visualizer: RenetServerVisualizer<240>,
 }
 
@@ -36,74 +33,68 @@ impl Server {
             authentication: ServerAuthentication::Unsecure,
         };
 
-        let players = HashMap::new();
         let server: RenetServer = RenetServer::new(ConnectionConfig::default());
         let transport = NetcodeServerTransport::new(server_config, socket).unwrap();
 
         Self {
             server,
             transport,
-            players,
-            messages: vec![],
             visualizer: RenetServerVisualizer::default(),
         }
     }
 
-    pub fn update(&mut self, duration: Duration) -> Result<(), io::Error> {
-        tracing::debug!("tick");
-
+    pub fn update(&mut self, duration: Duration) -> Result<(), NetcodeTransportError> {
         self.server.update(duration);
-        self.transport.update(duration, &mut self.server).unwrap();
+        self.transport.update(duration, &mut self.server)?;
         self.visualizer.update(&self.server);
 
-        while let Some(event) = self.server.get_event() {
-            tracing::info!("[Event]: {:?}", event);
+        Ok(())
+    }
 
-            match event {
-                ServerEvent::ClientConnected { client_id } => {
-                    // Handle user data
-                    let user_data = self.transport.user_data(client_id).unwrap();
-                    self.visualizer.add_client(client_id);
+    pub fn get_events(&mut self) -> Vec<ServerEvent> {
+        self.server
+            .get_event()
+            .into_iter()
+            .map(|event| event)
+            .collect()
+    }
 
-                    let username = common::Username::from_user_data(&user_data).0;
-                    self.players.insert(client_id, username.clone());
-                    tracing::info!("Players: {:?}", self.players);
+    pub fn get_messages(&mut self, player_data: &mut HashMap<u64, Vec<common::Message>>) -> usize {
+        let mut msg_cnt = 0;
 
-                    // let message = bincode::options()
-                    //     .serialize(&common::ServerMessages::ClientConnected {
-                    //         client_id,
-                    //         username,
-                    //     })
-                    //     .unwrap();
+        self.server.clients_id().iter().for_each(|client_id| {
+            if let Some(player_frames) = player_data.get_mut(client_id) {
+                // Only get frames from a client if it is already went through the connection event
+                player_frames.extend(self.get_client_frames(*client_id));
+                msg_cnt += 1;
+            }
+        });
 
-                    // send welcome message
-                }
-                ServerEvent::ClientDisconnected {
-                    client_id,
-                    reason: _,
-                } => {
-                    self.visualizer.remove_client(client_id);
-                    self.players.remove(&client_id);
-                }
+        msg_cnt
+    }
+
+    fn get_client_frames(&mut self, client_id: u64) -> Vec<common::Message> {
+        let mut messages = vec![];
+
+        while let Some(raw_message) = self
+            .server
+            .receive_message(client_id, DefaultChannel::ReliableOrdered)
+        {
+            match bincode::options().deserialize::<common::Frame>(&raw_message) {
+                Ok(frame) => messages.extend(frame.messages),
+                Err(e) => tracing::warn!("Could not deserialize message!"),
             }
         }
 
-        for client_id in self.server.clients_id() {
-            for channel_id in 0..3 {
-                // tracing::debug!("Checking client: {}", client_id);
-                while let Some(message) = self.server.receive_message(client_id, channel_id) {
-                    tracing::debug!("[{}][Raw Message]: {:?}", client_id, message);
+        messages
+    }
 
-                    if let Ok(message) = bincode::options().deserialize::<common::Message>(&message)
-                    {
-                        tracing::debug!("[{}][Message]: {:?}", client_id, message);
-                    }
-                }
-            }
-        }
+    pub fn send_frame(&mut self, client_id: u64, messages: Vec<common::Message>) {
+        let frame = common::Frame::new(messages);
+        let payload = bincode::options().serialize(&frame).unwrap();
+        self.server
+            .send_message(client_id, DefaultChannel::ReliableOrdered, payload);
 
         self.transport.send_packets(&mut self.server);
-
-        Ok(())
     }
 }
