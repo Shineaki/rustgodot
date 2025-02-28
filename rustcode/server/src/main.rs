@@ -10,7 +10,7 @@ fn main() {
 
     let mut server = Server::new();
 
-    let duration = Duration::from_millis(500);
+    let duration = Duration::from_millis(1000);
     loop {
         match server.update(duration) {
             Ok(_) => (),

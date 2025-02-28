@@ -1,87 +1,84 @@
-use std::{collections::HashMap, time::{Duration, SystemTime}};
+use std::time::{Duration, SystemTime};
 
+use godot::builtin::Vector2;
 use renet::ClientId;
-use renet_netcode::NETCODE_USER_DATA_BYTES;
 use serde::{Deserialize, Serialize};
 
 pub const PORT: usize = 7614;
 pub const PROTOCOL_ID: u64 = 27;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Frame {
+    // pub client_id: ClientId,
+    // pub timestamp: Duration,
+    pub messages: Vec<Message>,
+}
+
+impl Frame {
+    pub fn new(messages: Vec<Message>) -> Self {
+        Self { messages }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Message {
-    client_id: ClientId,
-    timestamp: Duration,
-    message_type: MessageType,
-    payload: InputChanged
+    pub client_id: ClientId,
+    pub timestamp: Duration,
+    pub action: ActionType,
+
+    // #[serde(skip_serializing)]
+    pub state: MessageState,
 }
 
 impl Message {
-    pub fn new(client_id: ClientId, message_type: MessageType, payload: InputChanged) -> Self {
+    pub fn new(client_id: ClientId, action: ActionType) -> Self {
         let timestamp = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap();
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap();
 
-        Self { client_id, timestamp, message_type, payload }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum MessageType {
-    InputChanged
-}
-
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct InputChanged {
-    input: (i8, i8)
-}
-
-impl InputChanged {
-    pub fn new(input: (i8, i8)) -> Self {
-        Self { input }
-    }
-}
-
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum ClientMessages {
-    Text(String),
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum ServerMessages {
-    ClientConnected {
-        client_id: ClientId,
-        username: String,
-    },
-    ClientDisconnected {
-        client_id: ClientId,
-    },
-    ClientMessage(Message),
-    InitClient {
-        usernames: HashMap<ClientId, String>,
-    },
-}
-
-pub struct Username(pub String);
-
-impl Username {
-    pub fn to_netcode_user_data(&self) -> [u8; NETCODE_USER_DATA_BYTES] {
-        let mut user_data = [0u8; NETCODE_USER_DATA_BYTES];
-        if self.0.len() > NETCODE_USER_DATA_BYTES - 8 {
-            panic!("Username is too big");
+        Self {
+            client_id,
+            timestamp,
+            action,
+            state: MessageState::Created,
         }
-        user_data[0] = self.0.len() as u8;
-        user_data[1..self.0.len() + 1].copy_from_slice(self.0.as_bytes());
-
-        user_data
     }
+}
 
-    pub fn from_user_data(user_data: &[u8; NETCODE_USER_DATA_BYTES]) -> Self {
-        let mut len = user_data[0] as usize;
-        len = len.min(NETCODE_USER_DATA_BYTES - 1);
-        let data = user_data[1..len + 1].to_vec();
-        let username = String::from_utf8(data).unwrap_or("unknown".to_string());
-        Self(username)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ActionType {
+    Movement(Movement),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Movement {
+    pub input: (i8, i8),
+    pub cur_ts: f64,
+    pub prev_ts: f64,
+    pub cur_pos: (f32, f32),
+    pub prev_pos: (f32, f32),
+}
+
+impl Movement {
+    pub fn new(
+        input: (i8, i8),
+        cur_ts: f64,
+        prev_ts: f64,
+        cur_pos: Vector2,
+        prev_pos: Vector2,
+    ) -> Self {
+        Self {
+            input,
+            cur_ts,
+            prev_ts,
+            cur_pos: (cur_pos.x, cur_pos.y),
+            prev_pos: (prev_pos.x, prev_pos.y),
+        }
     }
+}
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
+pub enum MessageState {
+    Created,
+    Sent,
+    ServerValidated,
 }

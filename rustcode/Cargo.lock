@@ -135,6 +135,7 @@ name = "common"
 version = "0.1.0"
 dependencies = [
  "bincode",
+ "godot",
  "renet",
  "renet_netcode",
  "renet_visualizer",
@@ -183,6 +184,12 @@ dependencies = [
  "epaint",
  "nohash-hasher",
 ]
+
+[[package]]
+name = "either"
+version = "1.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7914353092ddf589ad78f25c5c1c21b7f80b0ff8621e7c814c3485b5306da9d"
 
 [[package]]
 name = "emath"
@@ -358,6 +365,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "879f10e63c20629ecabbb64a8010319738c66a5cd0c29b02d63d272b03751d01"
 dependencies = [
  "generic-array",
+]
+
+[[package]]
+name = "itertools"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
+dependencies = [
+ "either",
 ]
 
 [[package]]
@@ -636,6 +652,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ringbuffer"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3df6368f71f205ff9c33c076d170dd56ebf68e8161c733c0caa07a7a5509ed53"
+
+[[package]]
 name = "rustcode"
 version = "0.1.0"
 dependencies = [
@@ -643,6 +665,9 @@ dependencies = [
  "client",
  "common",
  "godot",
+ "itertools",
+ "renet",
+ "ringbuffer",
  "server",
  "tracing-subscriber",
 ]
@@ -682,6 +707,7 @@ dependencies = [
  "renet",
  "renet_netcode",
  "renet_visualizer",
+ "ringbuffer",
  "tracing",
  "tracing-subscriber",
 ]
