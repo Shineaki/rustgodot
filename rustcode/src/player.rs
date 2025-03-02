@@ -1,27 +1,32 @@
+use std::thread;
 use std::time::Duration;
+use std::time::Instant;
 use std::time::SystemTime;
 
 use bincode::Options;
+use client::Client;
 use godot::classes::ISprite2D;
 use godot::classes::Sprite2D;
 use godot::prelude::*;
+use godot_tokio::AsyncRuntime;
 use ringbuffer::{AllocRingBuffer, RingBuffer};
+use std::sync::{Arc, Mutex};
 use tracing_subscriber::EnvFilter;
 
-const BUFFER_CAPACITY: usize = 100;
+const BUFFER_CAPACITY: usize = 32;
 
 #[derive(GodotClass)]
 #[class(base=Sprite2D)]
 struct Player {
-    speed: f64,
-    client: client::Client,
     base: Base<Sprite2D>,
+    speed: f64,
 
     cur_ts: f64,
     prev_ts: f64,
-
     tick_cntr: usize,
-    actions: AllocRingBuffer<common::Message>, // When dropping the last element it should be checked it is validated
+
+    client: Arc<Mutex<client::Client>>,
+    actions: AllocRingBuffer<common::Message>,
 }
 
 #[godot_api]
@@ -29,35 +34,42 @@ impl ISprite2D for Player {
     fn init(base: Base<Sprite2D>) -> Self {
         godot_print!("Client init");
 
-        tracing_subscriber::fmt()
-            .with_env_filter(EnvFilter::new("debug"))
-            .init();
-
         let ts = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap()
             .as_secs_f64();
 
+        let client = Arc::new(Mutex::new(Client::new()));
+
         Self {
-            speed: 400.0,
-            client: client::Client::new(),
             base,
+            speed: 400.0,
             cur_ts: ts,
             prev_ts: ts,
             tick_cntr: 0,
+            client: client.clone(),
             actions: AllocRingBuffer::new(BUFFER_CAPACITY),
         }
     }
 
     fn ready(&mut self) {
-        godot_print!("Client ready");
+        tracing_subscriber::fmt()
+            .with_env_filter(EnvFilter::new("debug"))
+            .init();
     }
 
     fn process(&mut self, delta: f64) {
-        self.client
-            .update(Duration::from_secs_f64(delta))
-            .map_err(|e| godot_error!("Error during client update: {:?}", e))
-            .ok();
+        // Update client
+        let client1 = self.client.clone();
+        AsyncRuntime::spawn(async move {
+            client1
+                .lock()
+                .unwrap()
+                .update(Duration::from_secs_f64(delta))
+                // In AsyncRuntime scopes, godo_print/error/etc. does not work!
+                .map_err(|e| tracing::error!("Error during client update: {:?}", e))
+                .ok();
+        });
 
         // Send new actions to server
         if self.tick_cntr % 6 == 0 {
@@ -70,9 +82,18 @@ impl ISprite2D for Player {
             }
 
             if !messages.is_empty() {
-                let frame = common::Frame::new(messages);
-                let payload = bincode::options().serialize(&frame).unwrap();
-                self.client.send(payload);
+                let client2 = self.client.clone();
+                AsyncRuntime::spawn(async move {
+                    let start = Instant::now();
+                    let frame = common::Frame::new(messages);
+                    let payload = bincode::options().serialize(&frame).unwrap();
+                    client2.lock().unwrap().send(payload);
+                    tracing::debug!(
+                        "[{:?}] Sending messages took: {:?}",
+                        thread::current().id(),
+                        start.elapsed()
+                    );
+                });
             }
         }
 
@@ -97,7 +118,7 @@ impl ISprite2D for Player {
             self.base_mut().translate(offset);
             let cur_pos = self.base().get_position();
 
-            godot_print!("{:?}", cur_pos);
+            godot_print!("{:.4} {:?}", dt, cur_pos);
 
             // TODO: handle client ID
             self.actions.push(common::Message::new(
