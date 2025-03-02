@@ -2,8 +2,10 @@ use std::time::Duration;
 use std::time::SystemTime;
 
 use bincode::Options;
+use godot::classes::CharacterBody2D;
+use godot::classes::ICharacterBody2D;
 use godot::classes::ISprite2D;
-use godot::classes::Sprite2D;
+// use godot::classes::Sprite2D;
 use godot::prelude::*;
 use ringbuffer::{AllocRingBuffer, RingBuffer};
 use tracing_subscriber::EnvFilter;
@@ -11,11 +13,11 @@ use tracing_subscriber::EnvFilter;
 const BUFFER_CAPACITY: usize = 100;
 
 #[derive(GodotClass)]
-#[class(base=Sprite2D)]
+#[class(base=CharacterBody2D)]
 struct Player {
     speed: f64,
     client: client::Client,
-    base: Base<Sprite2D>,
+    base: Base<CharacterBody2D>,
 
     cur_ts: f64,
     prev_ts: f64,
@@ -25,8 +27,8 @@ struct Player {
 }
 
 #[godot_api]
-impl ISprite2D for Player {
-    fn init(base: Base<Sprite2D>) -> Self {
+impl ICharacterBody2D for Player {
+    fn init(base: Base<CharacterBody2D>) -> Self {
         godot_print!("Client init");
 
         tracing_subscriber::fmt()
@@ -39,7 +41,7 @@ impl ISprite2D for Player {
             .as_secs_f64();
 
         Self {
-            speed: 400.0,
+            speed: 100.0,
             client: client::Client::new(),
             base,
             cur_ts: ts,
@@ -94,7 +96,7 @@ impl ISprite2D for Player {
                 * dt as f32;
 
             let prev_pos = self.base().get_position();
-            self.base_mut().translate(offset);
+            self.base_mut().move_and_collide(offset);
             let cur_pos = self.base().get_position();
 
             godot_print!("{:?}", cur_pos);

@@ -122,7 +122,7 @@ impl Server {
             for msg in messages.iter_mut() {
                 // TODOs:
                 // Check if every message arrived (E.G.: Send tick count from client side and check here if (cur_msg.tick - prev_msg.tick) == 1)
-                // Checkk if messages are ordered
+                // Check if messages are ordered
                 // Handle player data on server side? (E.G.: speed)
                 // Handle f32/f64 mismatch (Do not send f64 if it is not necessary - Vector2 calculates with f32s)
                 // If a message (or multiple) is lost "guess it"
@@ -138,7 +138,7 @@ impl Server {
                         assert!(dt > 0.0);
                         self.pos += Vector2::new(movement.input.0 as f32, movement.input.1 as f32)
                             .normalized()
-                            * 400.0
+                            * 100.0
                             * dt as f32;
 
                         msg.state = common::MessageState::ServerValidated;
