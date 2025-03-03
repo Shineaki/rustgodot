@@ -7,7 +7,7 @@ use godot::classes::Node2D;
 use godot::prelude::*;
 // use itertools::Itertools;
 use renet::ServerEvent;
-// use tracing_subscriber::EnvFilter;
+use tracing_subscriber::EnvFilter;
 
 const BUFFER_CAPACITY: usize = 100;
 
@@ -28,9 +28,6 @@ struct Server {
 impl INode2D for Server {
     fn init(base: Base<Node2D>) -> Self {
         godot_print!("Server init");
-        // tracing_subscriber::fmt()
-        //     .with_env_filter(EnvFilter::new("debug"))
-        //     .init();
 
         Self {
             server: server::Server::new(),
@@ -43,6 +40,9 @@ impl INode2D for Server {
 
     fn ready(&mut self) {
         godot_print!("Server ready");
+        tracing_subscriber::fmt()
+            .with_env_filter(EnvFilter::new("debug"))
+            .init();
     }
 
     fn process(&mut self, delta: f64) {
