@@ -2,10 +2,9 @@ use std::time::Duration;
 use std::time::SystemTime;
 
 use bincode::Options;
+use godot::classes::AnimatedSprite2D;
 use godot::classes::CharacterBody2D;
 use godot::classes::ICharacterBody2D;
-use godot::classes::ISprite2D;
-// use godot::classes::Sprite2D;
 use godot::prelude::*;
 use ringbuffer::{AllocRingBuffer, RingBuffer};
 use tracing_subscriber::EnvFilter;
@@ -86,14 +85,27 @@ impl ICharacterBody2D for Player {
     }
 
     fn physics_process(&mut self, _delta: f64) {
-        let dt = self.get_dt_from_timestamp();
+        // let dt = self.get_dt_from_timestamp(); TODO: discuss
         let (input_x, input_y) = self.handle_input();
+        let mut _animator = self.base().get_node_as::<AnimatedSprite2D>("Animator");
 
         // Update player position
-        if (input_x, input_y) != (0, 0) {
+        if (input_x, input_y) == (0, 0) {
+            _animator.set_animation("Idle");
+
+        }
+        else {
+            _animator.set_animation("Run");
+            if (_animator.is_flipped_h() && input_x > 0) {
+                _animator.set_flip_h(false);
+            } else if (!_animator.is_flipped_h() && input_x < 0) {
+                _animator.set_flip_h(true);
+            }
+            // _animator.play();
+
             let offset = Vector2::new(input_x as f32, input_y as f32).normalized()
                 * self.speed as f32
-                * dt as f32;
+                * _delta as f32;
 
             let prev_pos = self.base().get_position();
             self.base_mut().move_and_collide(offset);

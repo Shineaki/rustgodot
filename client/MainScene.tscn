@@ -1,11 +1,64 @@
-[gd_scene load_steps=4 format=3 uid="uid://ia1o7w0vn65a"]
+[gd_scene load_steps=13 format=3 uid="uid://ia1o7w0vn65a"]
 
 [ext_resource type="Texture2D" uid="uid://41x16tl1vg17" path="res://game_assets/characters/elf_m_idle_anim_f0.png" id="2_asqks"]
+[ext_resource type="Texture2D" uid="uid://bd7ursgxjlfp1" path="res://game_assets/characters/elf_m_hit_anim_f0.png" id="2_f87oq"]
 [ext_resource type="PackedScene" uid="uid://bykdfqsj8hw30" path="res://Dungeon.tscn" id="2_hokww"]
+[ext_resource type="Texture2D" uid="uid://d3as26n5hnde8" path="res://game_assets/characters/elf_m_idle_anim_f1.png" id="3_0c48v"]
+[ext_resource type="Texture2D" uid="uid://qbg3w57rv5ob" path="res://game_assets/characters/elf_m_idle_anim_f2.png" id="4_hhlvr"]
+[ext_resource type="Texture2D" uid="uid://bhtmj1cxrtrj0" path="res://game_assets/characters/elf_m_idle_anim_f3.png" id="5_1d2rl"]
+[ext_resource type="Texture2D" uid="uid://bl8daec58vocm" path="res://game_assets/characters/elf_m_run_anim_f0.png" id="7_k4i6j"]
+[ext_resource type="Texture2D" uid="uid://chh2gabfykbgp" path="res://game_assets/characters/elf_m_run_anim_f1.png" id="8_bcdbf"]
+[ext_resource type="Texture2D" uid="uid://ckma5vh5pwasb" path="res://game_assets/characters/elf_m_run_anim_f2.png" id="9_pjfut"]
+[ext_resource type="Texture2D" uid="uid://c06qdnil0np0f" path="res://game_assets/characters/elf_m_run_anim_f3.png" id="10_ncpb7"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8w31f"]
 radius = 4.0
 height = 18.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ulult"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_f87oq")
+}],
+"loop": true,
+"name": &"Hit",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_asqks")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_0c48v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_hhlvr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_1d2rl")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_k4i6j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_bcdbf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_pjfut")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ncpb7")
+}],
+"loop": true,
+"name": &"Run",
+"speed": 10.0
+}]
 
 [node name="Node2D" type="Node2D"]
 
@@ -13,12 +66,14 @@ height = 18.0
 
 [node name="Player" type="Player" parent="."]
 
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("2_asqks")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_8w31f")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(3, 3)
+
+[node name="Animator" type="AnimatedSprite2D" parent="Player"]
+sprite_frames = SubResource("SpriteFrames_ulult")
+animation = &"Hit"
+autoplay = "Idle"
