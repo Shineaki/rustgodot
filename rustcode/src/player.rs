@@ -21,6 +21,9 @@ struct Player {
     cur_ts: f64,
     prev_ts: f64,
 
+    facing_right: bool,
+    animation_state: String, // TODO: replace with enum
+
     tick_cntr: usize,
     actions: AllocRingBuffer<common::Message>, // When dropping the last element it should be checked it is validated
 }
@@ -45,6 +48,8 @@ impl ICharacterBody2D for Player {
             base,
             cur_ts: ts,
             prev_ts: ts,
+            facing_right: true,
+            animation_state: "Idle".to_string(),
             tick_cntr: 0,
             actions: AllocRingBuffer::new(BUFFER_CAPACITY),
         }
@@ -55,6 +60,10 @@ impl ICharacterBody2D for Player {
     }
 
     fn process(&mut self, delta: f64) {
+        let mut _animator = self.base().get_node_as::<AnimatedSprite2D>("Animator");
+        _animator.set_animation(&self.animation_state);
+        _animator.set_flip_h(!self.facing_right);
+
         self.client
             .update(Duration::from_secs_f64(delta))
             .map_err(|e| godot_error!("Error during client update: {:?}", e))
@@ -87,21 +96,17 @@ impl ICharacterBody2D for Player {
     fn physics_process(&mut self, _delta: f64) {
         // let dt = self.get_dt_from_timestamp(); TODO: discuss
         let (input_x, input_y) = self.handle_input();
-        let mut _animator = self.base().get_node_as::<AnimatedSprite2D>("Animator");
 
         // Update player position
         if (input_x, input_y) == (0, 0) {
-            _animator.set_animation("Idle");
-
-        }
-        else {
-            _animator.set_animation("Run");
-            if (_animator.is_flipped_h() && input_x > 0) {
-                _animator.set_flip_h(false);
-            } else if (!_animator.is_flipped_h() && input_x < 0) {
-                _animator.set_flip_h(true);
+            self.animation_state = "Idle".to_string();
+        } else {
+            self.animation_state = "Run".to_string();
+            if self.facing_right && input_x < 0 {
+                self.facing_right = false;
+            } else if !self.facing_right && input_x > 0 {
+                self.facing_right = true;
             }
-            // _animator.play();
 
             let offset = Vector2::new(input_x as f32, input_y as f32).normalized()
                 * self.speed as f32
@@ -154,12 +159,12 @@ impl Player {
         (input_x, input_y)
     }
 
-    fn get_dt_from_timestamp(&mut self) -> f64 {
-        self.cur_ts = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap()
-            .as_secs_f64();
+    // fn get_dt_from_timestamp(&mut self) -> f64 {
+    //     self.cur_ts = SystemTime::now()
+    //         .duration_since(SystemTime::UNIX_EPOCH)
+    //         .unwrap()
+    //         .as_secs_f64();
 
-        self.cur_ts - self.prev_ts
-    }
+    //     self.cur_ts - self.prev_ts
+    // }
 }
