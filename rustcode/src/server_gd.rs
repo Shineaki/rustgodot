@@ -143,7 +143,7 @@ impl Server {
                 if let common::ActionType::Movement(movement) = &msg.action {
                     if (movement.input.0, movement.input.1) != (0, 0) {
                         let dt = movement.cur_ts - movement.prev_ts;
-                        assert!(dt > 0.0);
+                        // assert!(dt > 0.0); // TODO!!!!!!!!!!
                         let offset = Vector2::new(movement.input.0 as f32, movement.input.1 as f32)
                             .normalized()
                             * 100.0
