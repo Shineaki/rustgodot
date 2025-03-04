@@ -1,24 +1,15 @@
 [gd_scene load_steps=4 format=3 uid="uid://ia1o7w0vn65a"]
 
-[ext_resource type="Texture2D" uid="uid://41x16tl1vg17" path="res://game_assets/characters/elf_m_idle_anim_f0.png" id="2_asqks"]
-[ext_resource type="PackedScene" uid="uid://bykdfqsj8hw30" path="res://Dungeon.tscn" id="2_hokww"]
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8w31f"]
-radius = 4.0
-height = 18.0
+[ext_resource type="PackedScene" uid="uid://bykdfqsj8hw30" path="res://Scenes/Dungeon.tscn" id="2_hokww"]
+[ext_resource type="PackedScene" uid="uid://cy2klyltk2ucc" path="res://Scenes/Player.tscn" id="2_khxoa"]
+[ext_resource type="PackedScene" uid="uid://cqu121b1mfl7y" path="res://Scenes/Enemy.tscn" id="11_3d6qv"]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Dungeon" parent="." instance=ExtResource("2_hokww")]
 
-[node name="Player" type="Player" parent="."]
+[node name="Player" parent="." instance=ExtResource("2_khxoa")]
+position = Vector2(1, -2)
 
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("2_asqks")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-position = Vector2(0, 5)
-shape = SubResource("CapsuleShape2D_8w31f")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(3, 3)
+[node name="Enemy" parent="." instance=ExtResource("11_3d6qv")]
+position = Vector2(-61, -26)

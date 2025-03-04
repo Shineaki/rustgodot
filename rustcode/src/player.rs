@@ -3,7 +3,7 @@ use std::time::{Duration, Instant, SystemTime};
 
 use bincode::Options;
 use client::Client;
-use godot::classes::{CharacterBody2D, ICharacterBody2D};
+use godot::classes::{AnimatedSprite2D, CharacterBody2D, ICharacterBody2D};
 use godot::prelude::*;
 use godot_tokio::AsyncRuntime;
 use ringbuffer::{AllocRingBuffer, RingBuffer};
@@ -19,6 +19,10 @@ struct Player {
 
     cur_ts: f64,
     prev_ts: f64,
+
+    facing_right: bool,
+    animation_state: String, // TODO: replace with enum
+
     tick_cntr: usize,
 
     client: Arc<Mutex<client::Client>>,
@@ -40,6 +44,8 @@ impl ICharacterBody2D for Player {
             base,
             cur_ts: ts,
             prev_ts: ts,
+            facing_right: true,
+            animation_state: "Idle".to_string(),
             tick_cntr: 0,
             client: Arc::new(Mutex::new(Client::new())),
             actions: AllocRingBuffer::new(BUFFER_CAPACITY),
@@ -53,6 +59,10 @@ impl ICharacterBody2D for Player {
     }
 
     fn process(&mut self, delta: f64) {
+        let mut _animator = self.base().get_node_as::<AnimatedSprite2D>("Animator");
+        _animator.set_animation(&self.animation_state);
+        _animator.set_flip_h(!self.facing_right);
+
         // Send new actions to server
         if self.tick_cntr % 6 == 0 {
             // Collect unprocessed messages
@@ -98,20 +108,29 @@ impl ICharacterBody2D for Player {
     }
 
     fn physics_process(&mut self, _delta: f64) {
-        let dt = self.get_dt_from_timestamp();
+        // let dt = self.get_dt_from_timestamp(); TODO: discuss
         let (input_x, input_y) = self.handle_input();
 
         // Update player position
-        if (input_x, input_y) != (0, 0) {
+        if (input_x, input_y) == (0, 0) {
+            self.animation_state = "Idle".to_string();
+        } else {
+            self.animation_state = "Run".to_string();
+            if self.facing_right && input_x < 0 {
+                self.facing_right = false;
+            } else if !self.facing_right && input_x > 0 {
+                self.facing_right = true;
+            }
+
             let offset = Vector2::new(input_x as f32, input_y as f32).normalized()
                 * self.speed as f32
-                * dt as f32;
+                * _delta as f32;
 
             let prev_pos = self.base().get_position();
             self.base_mut().move_and_collide(offset);
             let cur_pos = self.base().get_position();
 
-            godot_print!("{:.4} {:?}", dt, cur_pos);
+            // godot_print!("{:.4} {:?}", dt, cur_pos);
 
             // TODO: handle client ID
             self.actions.push(common::Message::new(
@@ -154,12 +173,12 @@ impl Player {
         (input_x, input_y)
     }
 
-    fn get_dt_from_timestamp(&mut self) -> f64 {
-        self.cur_ts = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap()
-            .as_secs_f64();
+    // fn get_dt_from_timestamp(&mut self) -> f64 {
+    //     self.cur_ts = SystemTime::now()
+    //         .duration_since(SystemTime::UNIX_EPOCH)
+    //         .unwrap()
+    //         .as_secs_f64();
 
-        self.cur_ts - self.prev_ts
-    }
+    //     self.cur_ts - self.prev_ts
+    // }
 }
