@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://dbjv4ckay15if"]
+[gd_scene load_steps=4 format=3 uid="uid://dbjv4ckay15if"]
 
-[ext_resource type="Script" path="res://Scripts/Authentication.gd" id="1_6l34e"]
-[ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="2_br4rq"]
+[ext_resource type="Script" path="res://Scripts/Authentication.gd" id="1_lwovo"]
+[ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="2_44upm"]
+
+[sub_resource type="Theme" id="Theme_g2ene"]
+default_font = ExtResource("2_44upm")
 
 [node name="Authentication" type="Control"]
 layout_mode = 3
@@ -10,7 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_6l34e")
+script = ExtResource("1_lwovo")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -22,6 +25,7 @@ offset_left = -176.0
 offset_right = 224.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_g2ene")
 alignment = 1
 
 [node name="GameLabel" type="Label" parent="VBoxContainer"]
@@ -29,7 +33,7 @@ custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.721236, 0.599334, 0.44251, 1)
 theme_override_colors/font_shadow_color = Color(0.448459, 0.348355, 0.188376, 1)
-theme_override_fonts/font = ExtResource("2_br4rq")
+theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 64
 text = "RustGodotGame"
 horizontal_alignment = 1
@@ -38,7 +42,7 @@ vertical_alignment = 1
 [node name="StateLabel" type="Label" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_br4rq")
+theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 32
 text = "Not signed in"
 horizontal_alignment = 1
@@ -46,7 +50,7 @@ horizontal_alignment = 1
 [node name="EmailInput" type="LineEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_br4rq")
+theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 24
 placeholder_text = "email"
 alignment = 1
@@ -54,7 +58,7 @@ alignment = 1
 [node name="PasswordInput" type="LineEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_br4rq")
+theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 24
 placeholder_text = "password"
 alignment = 1
@@ -63,14 +67,14 @@ secret = true
 [node name="LoginButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_br4rq")
+theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 24
 text = "Login"
 
 [node name="SignupButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_br4rq")
+theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 24
 text = "Register"
 
@@ -79,7 +83,7 @@ custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98275, 4.74088e-06, 5.77569e-07, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("2_br4rq")
+theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1

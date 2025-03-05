@@ -55,7 +55,7 @@ func on_userdata_succeeded(userdata):
 	print(userdata)
 	UserData.email = userdata.email
 	UserData.user_id = userdata.local_id
-	get_tree().change_scene_to_file("res://MainScene.tscn")
+	get_tree().change_scene_to_file("res://Scenes/MainScene.tscn")
 
 func on_login_failed(error_code, message):
 	$VBoxContainer/StateLabel.text = "Login Failed!"
