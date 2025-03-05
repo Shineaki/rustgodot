@@ -12,3 +12,4 @@ renet_visualizer = "1.0.0"
 serde = { version = "1.0.218", features = ["derive"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+ringbuffer = "0.15.0"

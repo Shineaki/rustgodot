@@ -169,6 +169,7 @@ dependencies = [
  "renet",
  "renet_netcode",
  "renet_visualizer",
+ "ringbuffer",
  "serde",
  "tracing",
  "tracing-subscriber",

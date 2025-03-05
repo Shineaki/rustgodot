@@ -23,10 +23,10 @@ struct Player {
     facing_right: bool,
     animation_state: String, // TODO: replace with enum
 
-    tick_cntr: usize,
+    tick: usize,
 
     client: Arc<Mutex<client::Client>>,
-    actions: AllocRingBuffer<common::Message>,
+    actions: AllocRingBuffer<common::Action>,
 }
 
 #[godot_api]
@@ -46,7 +46,7 @@ impl ICharacterBody2D for Player {
             prev_ts: ts,
             facing_right: true,
             animation_state: "Idle".to_string(),
-            tick_cntr: 0,
+            tick: 0,
             client: Arc::new(Mutex::new(Client::new())),
             actions: AllocRingBuffer::new(BUFFER_CAPACITY),
         }
@@ -64,51 +64,57 @@ impl ICharacterBody2D for Player {
         _animator.set_flip_h(!self.facing_right);
 
         // Send new actions to server
-        if self.tick_cntr % 6 == 0 {
+        if self.tick % 6 == 0 {
             // Collect unprocessed messages
-            let mut messages = vec![];
+            let mut actions = vec![];
             for action in self.actions.iter_mut() {
-                if action.state == common::MessageState::Created {
-                    action.state = common::MessageState::Sent;
-                    messages.push(action.clone()) // TODO
+                match action {
+                    common::Action::Movement(movement) => {
+                        if movement.state == common::ActionState::New {
+                            movement.state = common::ActionState::SentByClient;
+                            actions.push(action.clone()) // TODO
+                        }
+                    }
                 }
             }
 
-            if !messages.is_empty() {
-                let client = self.client.clone();
-                AsyncRuntime::spawn(async move {
-                    let start = Instant::now();
-                    match client.try_lock() {
-                        Ok(mut client) => {
-                            // Update client
-                            client
-                                .update(Duration::from_secs_f64(6.0 * delta))
-                                // In AsyncRuntime scopes, godo_print/error/etc. does not work!
-                                .map_err(|e| tracing::error!("Error during client update: {:?}", e))
-                                .ok();
+            // if !actions.is_empty() {
+            let client = self.client.clone();
+            AsyncRuntime::spawn(async move {
+                let start = Instant::now();
+                match client.try_lock() {
+                    Ok(mut client) => {
+                        // Update client
+                        client
+                            .update(Duration::from_secs_f64(6.0 * delta))
+                            // In AsyncRuntime scopes, godo_print/error/etc. does not work!
+                            .map_err(|e| tracing::error!("Error during client update: {:?}", e))
+                            .ok();
 
-                            // Send data to server
-                            let frame = common::Frame::new(messages);
-                            let payload = bincode::options().serialize(&frame).unwrap();
-                            client.send(payload);
+                        // Send data to server
+                        let frame = common::Frame::new(actions);
+                        let payload = bincode::options().serialize(&frame).unwrap();
+                        client.send(payload);
 
-                            tracing::debug!("Handling networking took: {:?}", start.elapsed());
-                        }
-                        Err(_) => tracing::warn!("Networking seem to be slow, change something?!"),
+                        // Get data from server
+                        let new_frame = client.get_messages();
+
+                        tracing::debug!("Handling networking took: {:?}\n{:?}", start.elapsed(), new_frame);
                     }
-                });
-            }
+                    Err(_) => tracing::warn!("Networking seem to be slow, change something?!"),
+                }
+            });
+            // }
         }
 
         // TODO: handle messages sent by server
         // TODO: validate messages (self.actions)
 
         self.prev_ts = self.cur_ts;
-        self.tick_cntr += 1;
+        self.tick += 1;
     }
 
-    fn physics_process(&mut self, _delta: f64) {
-        // let dt = self.get_dt_from_timestamp(); TODO: discuss
+    fn physics_process(&mut self, delta: f64) {
         let (input_x, input_y) = self.handle_input();
 
         // Update player position
@@ -116,33 +122,23 @@ impl ICharacterBody2D for Player {
             self.animation_state = "Idle".to_string();
         } else {
             self.animation_state = "Run".to_string();
-            if self.facing_right && input_x < 0 {
-                self.facing_right = false;
-            } else if !self.facing_right && input_x > 0 {
-                self.facing_right = true;
-            }
+            self.facing_right = input_x > 0;
 
             let offset = Vector2::new(input_x as f32, input_y as f32).normalized()
                 * self.speed as f32
-                * _delta as f32;
+                * delta as f32;
 
-            let prev_pos = self.base().get_position();
             self.base_mut().move_and_collide(offset);
-            let cur_pos = self.base().get_position();
 
-            // godot_print!("{:.4} {:?}", dt, cur_pos);
+            tracing::debug!("{:.4}: {:?}", delta, self.base().get_position());
 
             // TODO: handle client ID
-            self.actions.push(common::Message::new(
-                412,
-                common::ActionType::Movement(common::Movement::new(
+            self.actions
+                .push(common::Action::Movement(common::Movement::new(
+                    self.tick,
+                    delta,
                     (input_x, input_y),
-                    self.cur_ts,
-                    self.prev_ts,
-                    cur_pos,
-                    prev_pos,
-                )),
-            ));
+                )));
         }
     }
 }
@@ -172,13 +168,4 @@ impl Player {
 
         (input_x, input_y)
     }
-
-    // fn get_dt_from_timestamp(&mut self) -> f64 {
-    //     self.cur_ts = SystemTime::now()
-    //         .duration_since(SystemTime::UNIX_EPOCH)
-    //         .unwrap()
-    //         .as_secs_f64();
-
-    //     self.cur_ts - self.prev_ts
-    // }
 }
