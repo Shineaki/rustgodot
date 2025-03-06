@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7nt5okedxx4f"]
+
+[ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="1_k56xg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xujei"]
+bg_color = Color(0.185106, 0.0780516, 0.015086, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="PanelContainer" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_xujei")
+
+[node name="Container" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Container"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_k56xg")
+theme_override_font_sizes/font_size = 48
+text = "Uborka"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Level" type="Label" parent="Container"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_k56xg")
+theme_override_font_sizes/font_size = 32
+text = "Uborka"
+horizontal_alignment = 1

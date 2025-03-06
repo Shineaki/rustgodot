@@ -52,7 +52,7 @@ var _encrypt_key := "5vg76n90345f7w390346" if Utilities.is_web() else OS.get_uni
 
 
 var _base_url: String = ""
-var _extended_url: String = "projects/[PROJECT_ID]/databases/(default)/documents/"
+var _extended_url: String = "projects/[PROJECT_ID]/databases/[PROJECT_ID]/documents/"
 var _query_suffix: String = ":runQuery"
 var _agg_query_suffix: String = ":runAggregationQuery"
 

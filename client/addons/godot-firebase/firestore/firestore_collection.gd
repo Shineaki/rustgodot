@@ -40,7 +40,7 @@ func get_doc(document_id : String, from_cache : bool = false, is_listener : bool
 	task.action = FirestoreTask.Task.TASK_GET
 	task.data = collection_name + "/" + document_id
 	var url = _get_request_url() + _separator + document_id.replace(" ", "%20")
-
+	print(url)
 	_process_request(task, document_id, url)
 	var result = await Firebase.Firestore._handle_task_finished(task)
 	if result != null:
