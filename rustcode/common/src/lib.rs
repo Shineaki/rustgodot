@@ -74,10 +74,10 @@ pub struct ServerSidePlayerData {
 }
 
 impl ServerSidePlayerData {
-    pub fn new() -> Self {
+    pub fn new(character: Gd<CharacterBody2D>) -> Self {
         Self {
             speed: 100.0,
-            player: CharacterBody2D::new_alloc(),
+            player: character,
             messages: AllocRingBuffer::new(BUFFER_CAPACITY),
         }
     }

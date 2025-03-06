@@ -1,4 +1,4 @@
-use godot::classes::{CharacterBody2D, INode2D, Node2D, ResourceLoader};
+use godot::classes::{CharacterBody2D, INode2D, Node2D};
 use godot::prelude::*;
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
@@ -81,7 +81,10 @@ impl Server {
                 match event {
                     ServerEvent::ClientConnected { client_id } => {
                         tracing::info!("Client {} connected", client_id);
-                        let player_data = common::ServerSidePlayerData::new();
+
+                        let player_res = load::<PackedScene>("res://player.tscn");
+                        let player_obj = player_res.instantiate_as::<CharacterBody2D>();
+                        let player_data = common::ServerSidePlayerData::new(player_obj);
 
                         self.base_mut().add_child(&player_data.player);
                         self.player_data.insert(*client_id, player_data);
