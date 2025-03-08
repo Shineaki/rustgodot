@@ -4,12 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://cy2klyltk2ucc" path="res://Scenes/Player.tscn" id="2_khxoa"]
 [ext_resource type="PackedScene" uid="uid://cqu121b1mfl7y" path="res://Scenes/Enemy.tscn" id="11_3d6qv"]
 
-[node name="Node2D" type="Node2D"]
-
-[node name="Dungeon" parent="." instance=ExtResource("2_hokww")]
+[node name="Client" type="Client"]
 
 [node name="Player" parent="." instance=ExtResource("2_khxoa")]
-position = Vector2(1, -2)
+
+[node name="Dungeon" parent="." instance=ExtResource("2_hokww")]
+z_index = -1
 
 [node name="Enemy" parent="." instance=ExtResource("11_3d6qv")]
 position = Vector2(-61, -26)

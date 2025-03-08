@@ -50,7 +50,7 @@ impl INode2D for Server {
         let msg_cnt = self.handle_messages();
         let msg_cnt = self.process_messages();
 
-        tracing::debug!("Handling networking took: {:?}", start.elapsed());
+        // tracing::debug!("Handling networking took: {:?}", start.elapsed());
 
         self.tick += 1;
     }
@@ -82,7 +82,7 @@ impl Server {
                     ServerEvent::ClientConnected { client_id } => {
                         tracing::info!("Client {} connected", client_id);
 
-                        let player_res = load::<PackedScene>("res://player.tscn");
+                        let player_res = load::<PackedScene>("res://Scenes/Player.tscn");
                         let player_obj = player_res.instantiate_as::<CharacterBody2D>();
                         let player_data = common::ServerSidePlayerData::new(player_obj);
 
@@ -138,14 +138,20 @@ impl Server {
 
                         data.player.move_and_collide(offset);
 
+                        tracing::debug!(
+                            "{:?} ({:?}, {}, {})",
+                            data.player.get_position(),
+                            movement.input,
+                            100.0,
+                            movement.delta
+                        );
+
                         movement.state = common::ActionState::ValidatedByServer;
                         validated_client_messages.push(msg.clone()); // TODO?
                     }
                 }
                 msg_cnt += 1;
             }
-
-            tracing::debug!("{:?}", data.player.get_position());
 
             // TODO: "Validated" messages are sent back to client but unhandled on client side
             self.server

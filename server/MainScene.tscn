@@ -1,8 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://ia1o7w0vn65a"]
+[gd_scene load_steps=3 format=3 uid="uid://ia1o7w0vn65a"]
 
 [ext_resource type="Script" path="res://set_fps.gd" id="1_xa3h2"]
+[ext_resource type="PackedScene" uid="uid://bykdfqsj8hw30" path="res://Scenes/Dungeon.tscn" id="2_4fena"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_xa3h2")
 
 [node name="Server" type="Server" parent="."]
+
+[node name="Dungeon" parent="." instance=ExtResource("2_4fena")]
+z_index = -5
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
