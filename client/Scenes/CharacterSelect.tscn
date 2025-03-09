@@ -25,64 +25,77 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_b6soh")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(1152, 648)
-layout_mode = 0
-offset_right = 1152.0
-offset_bottom = 664.0
+[node name="CharacterContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 520)
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 16
-alignment = 1
-
-[node name="LeftDiv" type="VBoxContainer" parent="VBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="LeftDiv" type="VBoxContainer" parent="CharacterContainer"]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(320, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label3" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Spacer" type="Label" parent="CharacterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
-[node name="Characters" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Characters" type="Label" parent="CharacterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_hygms")
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 40
 text = "Characters"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label2" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Spacer2" type="Label" parent="CharacterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
+[node name="PlayContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -46.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(260, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayContainer"]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="PlayContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_hygms")
-theme_override_font_sizes/font_size = 128
+theme_override_font_sizes/font_size = 48
 text = "Play"
 
-[node name="SpinnerBox" type="HBoxContainer" parent="."]
-custom_minimum_size = Vector2(1152, 0)
+[node name="Control" type="Control" parent="PlayContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-offset_top = 292.0
-offset_right = 1152.0
-offset_bottom = 356.0
+
+[node name="SpinnerBox" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -45.5
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
 alignment = 1
 
 [node name="SpinnerBox2" type="VBoxContainer" parent="SpinnerBox"]
@@ -123,7 +136,7 @@ texture_repeat = 0
 material = null
 use_parent_material = false
 clip_contents = true
-custom_minimum_size = Vector2(64, 64)
+custom_minimum_size = Vector2(48, 48)
 layout_direction = 0
 layout_mode = 2
 size_flags_horizontal = 1
@@ -155,6 +168,8 @@ script = ExtResource("4_6h06x")
 
 [node name="Label" type="Label" parent="SpinnerBox/SpinnerBox2/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hygms")
+theme_override_font_sizes/font_size = 20
 text = "Fetching data..."
 
-[connection signal="pressed" from="VBoxContainer/HBoxContainer2/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="PlayContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
