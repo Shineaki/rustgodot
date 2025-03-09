@@ -1,10 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://dbjv4ckay15if"]
+[gd_scene load_steps=7 format=3 uid="uid://dbjv4ckay15if"]
 
 [ext_resource type="Script" path="res://Scripts/Authentication.gd" id="1_lwovo"]
 [ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="2_44upm"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8x38w"]
+bg_color = Color(0.196078, 0.215686, 0.254902, 1)
+
 [sub_resource type="Theme" id="Theme_g2ene"]
 default_font = ExtResource("2_44upm")
+
+[sub_resource type="InputEventKey" id="InputEventKey_8qoei"]
+device = -1
+keycode = 4194309
+
+[sub_resource type="Shortcut" id="Shortcut_w3vnm"]
+events = [SubResource("InputEventKey_8qoei")]
 
 [node name="Authentication" type="Control"]
 layout_mode = 3
@@ -15,17 +25,28 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lwovo")
 
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8x38w")
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -176.0
-offset_right = 224.0
+offset_left = -156.0
+offset_right = 156.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_g2ene")
+theme_override_constants/separation = 6
 alignment = 1
 
 [node name="GameLabel" type="Label" parent="VBoxContainer"]
@@ -64,14 +85,20 @@ placeholder_text = "password"
 alignment = 1
 secret = true
 
-[node name="LoginButton" type="Button" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LoginButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 24
+shortcut = SubResource("Shortcut_w3vnm")
 text = "Login"
 
-[node name="SignupButton" type="Button" parent="VBoxContainer"]
+[node name="SignupButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_44upm")
@@ -89,5 +116,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[connection signal="pressed" from="VBoxContainer/LoginButton" to="." method="_on_login_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/SignupButton" to="." method="_on_signup_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/LoginButton" to="." method="_on_login_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/SignupButton" to="." method="_on_signup_button_pressed"]

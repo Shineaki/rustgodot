@@ -2,8 +2,10 @@
 
 [ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="1_hygms"]
 [ext_resource type="Script" path="res://Scripts/CharacterSelect.gd" id="1_sof67"]
-[ext_resource type="PackedScene" uid="uid://c7nt5okedxx4f" path="res://Scenes/player_container.tscn" id="2_ia2xw"]
 [ext_resource type="Script" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_6h06x"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b6soh"]
+bg_color = Color(0.196078, 0.215686, 0.254902, 1)
 
 [node name="CharacterSelect" type="Control"]
 layout_mode = 3
@@ -14,8 +16,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sof67")
 
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b6soh")
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(1152, 648)
 layout_mode = 0
 offset_right = 1152.0
@@ -55,18 +65,12 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
-[node name="PlayerContainer" parent="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_ia2xw")]
-layout_mode = 2
-
-[node name="PlayerContainer2" parent="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_ia2xw")]
-layout_mode = 2
-
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer2"]
+[node name="PlayButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_hygms")
@@ -152,3 +156,5 @@ script = ExtResource("4_6h06x")
 [node name="Label" type="Label" parent="SpinnerBox/SpinnerBox2/VBoxContainer"]
 layout_mode = 2
 text = "Fetching data..."
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/PlayButton" to="." method="_on_play_button_pressed"]

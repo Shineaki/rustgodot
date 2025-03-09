@@ -1,14 +1,17 @@
-extends Node2D
+extends PanelContainer
 
-var i = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print(UserData.user_id) # Globals
-	#print(Firebase.Auth.auth) # auth of the lib
-	#TODO: refresh token every 1 hour
+	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+func set_player_name(name: String) -> void:
+	$Container/Name.text = name
+
+func set_player_level(level: String) -> void:
+	$Container/Level.text = level
