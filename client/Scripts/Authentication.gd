@@ -40,7 +40,13 @@ func on_login_succeeded(auth):
 	print("on_login_succeeded")
 	$VBoxContainer/StateLabel.text = "Login Success!"
 	$VBoxContainer/ErrorLabel.text = ""
-	Firebase.Auth.get_user_data()
+	#print(auth)
+	UserData.email = auth.email
+	UserData.user_id = auth.localid
+	UserData.token = auth.idtoken
+	#https://rustgodotgame.web.app/api/qwe
+	get_tree().change_scene_to_file("res://Scenes/CharacterSelect.tscn")
+	#Firebase.Auth.get_user_data()
 	#Firebase.Auth.save_auth(auth)
 	#get_tree().change_scene_to_file("res://MainScene.tscn")
 	# TODO: Logout
@@ -52,10 +58,12 @@ func on_signup_succeeded(auth):
 	$VBoxContainer/ErrorLabel.text = ""
 
 func on_userdata_succeeded(userdata):
-	print(userdata)
-	UserData.email = userdata.email
-	UserData.user_id = userdata.local_id
-	get_tree().change_scene_to_file("res://Scenes/CharacterSelect.tscn")
+	pass
+	#print(userdata)
+	#UserData.email = userdata.email
+	#UserData.user_id = userdata.local_id
+	#https://rustgodotgame.web.app/api/qwe
+	#get_tree().change_scene_to_file("res://Scenes/CharacterSelect.tscn")
 
 func on_login_failed(error_code, message):
 	$VBoxContainer/StateLabel.text = "Login Failed!"
