@@ -1,25 +1,21 @@
-use godot::classes::{INode2D, Node2D};
+use godot::classes::{CharacterBody2D, INode2D, Node2D};
 use godot::prelude::*;
-use godot_tokio::AsyncRuntime;
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 // use itertools::Itertools;
 use renet::ServerEvent;
+use ringbuffer::RingBuffer;
 use tracing_subscriber::EnvFilter;
-
-const BUFFER_CAPACITY: usize = 32;
 
 // TODO: clock synchronization!
 
 #[derive(GodotClass)]
 #[class(base=Node2D)]
 struct Server {
-    server: Option<Arc<Mutex<server::Server>>>,
-    player_data: Arc<Mutex<HashMap<u64, Vec<common::Message>>>>,
-    tick_cntr: usize,
-
-    pos: Vector2,
+    server: Option<server::Server>,
+    player_scene: Gd<PackedScene>, // TODO: when networking is working/tested this should be a simple lightweight struct!
+    player_data: HashMap<u64, common::ServerSidePlayerData>,
+    tick: usize,
     base: Base<Node2D>,
 }
 
@@ -30,104 +26,102 @@ impl INode2D for Server {
 
         Self {
             server: None,
-            player_data: Arc::new(Mutex::new(HashMap::new())),
-            tick_cntr: 0,
-            pos: Vector2::new(0.0, 0.0),
+            player_scene: load::<PackedScene>(common::PLAYER_SCENE_PATH),
+            player_data: HashMap::new(),
+            tick: 0,
             base,
         }
     }
 
     fn ready(&mut self) {
-        self.server = Some(Arc::new(Mutex::new(server::Server::new())));
+        self.server = Some(server::Server::new());
         tracing_subscriber::fmt()
             .with_env_filter(EnvFilter::new("debug"))
             .init();
+
         godot_print!("Server is ready! (Socket bound!)");
     }
 
     // The server is limited to 10FPS
     fn process(&mut self, delta: f64) {
-        let t0 = Instant::now();
+        let start = Instant::now();
 
-        let server = self.server.clone();
-        let player_data = self.player_data.clone();
-        AsyncRuntime::spawn(async move {
-            let start = Instant::now();
-            // TODO: Server should be initialized at this point, but should be handled if not!
-            match server.unwrap().try_lock() {
-                Ok(mut server) => {
-                    // Update server
-                    Server::update_server(&mut server, delta);
+        // Update server
+        self.update_server(delta);
+        let event_cnt = self.handle_events();
+        let msg_cnt = self.handle_messages();
+        let msg_cnt = self.process_messages();
 
-                    let mut pd = player_data.lock().unwrap();
+        // tracing::debug!("Handling networking took: {:?}", start.elapsed());
 
-                    let event_cnt = Server::handle_events(&mut server, &mut pd);
-                    
-                    let msg_cnt = Server::handle_messages(&mut server, &mut pd);
-                    let msg_cnt = Server::process_messages(&mut server, &mut pd);
-
-                    tracing::debug!("Handling networking took: {:?}", start.elapsed());
-                }
-                Err(_) => tracing::warn!("Networking seem to be slow, change something?!"),
-            }
-        });
-
-        self.tick_cntr += 1;
+        self.tick += 1;
     }
 }
 
 #[godot_api]
 impl Server {
-    fn update_server(server: &mut server::Server, delta: f64) {
+    fn update_server(&mut self, delta: f64) {
         // Update server every tick
-        server
+        self.server
+            .as_mut()
+            .unwrap()
             .update(Duration::from_secs_f64(delta))
             .map_err(|e| godot_error!("Error during server update: {:?}", e))
             .ok();
     }
 
-    fn handle_events(
-        server: &mut server::Server,
-        player_data: &mut HashMap<u64, Vec<common::Message>>,
-    ) -> usize {
+    fn handle_events(&mut self) -> usize {
         let mut event_cnt = 0;
         // Handle server events
-        server.get_events().iter().for_each(|event| {
-            event_cnt += 1;
-            match event {
-                ServerEvent::ClientConnected { client_id } => {
-                    tracing::info!("Client {} connected", client_id);
-                    player_data.insert(*client_id, Vec::with_capacity(BUFFER_CAPACITY));
+        self.server
+            .as_mut()
+            .unwrap()
+            .get_events()
+            .iter()
+            .for_each(|event| {
+                event_cnt += 1;
+                match event {
+                    ServerEvent::ClientConnected { client_id } => {
+                        tracing::info!("Client {} connected", client_id);
+
+                        let player_data = common::ServerSidePlayerData::new(
+                            self.player_scene.instantiate_as::<CharacterBody2D>(),
+                        );
+
+                        // Add player to the scene
+                        self.base_mut().add_child(&player_data.player);
+                        self.player_data.insert(*client_id, player_data);
+                    }
+                    ServerEvent::ClientDisconnected { client_id, reason } => {
+                        tracing::info!("Client {} disconnected, reason: {}", client_id, reason);
+                        self.player_data
+                            .remove(client_id)
+                            .expect("Data for client_id should be there!")
+                            .player
+                            .queue_free();
+                    }
                 }
-                ServerEvent::ClientDisconnected { client_id, reason } => {
-                    tracing::info!("Client {} disconnected, reason: {}", client_id, reason);
-                    player_data.remove(client_id);
-                }
-            }
-        });
+            });
 
         event_cnt
     }
 
-    fn handle_messages(
-        server: &mut server::Server,
-        player_data: &mut HashMap<u64, Vec<common::Message>>,
-    ) -> usize {
+    fn handle_messages(&mut self) -> usize {
         // Get new messages
-        server.get_messages(player_data)
+        self.server
+            .as_mut()
+            .unwrap()
+            .get_messages(&mut self.player_data)
     }
 
-    fn process_messages(
-        server: &mut server::Server,
-        player_data: &mut HashMap<u64, Vec<common::Message>>,
-    ) -> usize {
+    fn process_messages(&mut self) -> usize {
         // It is assumed the messages are ordered in the buffer!!!
         let mut msg_cnt = 0;
 
-        for (client_id, messages) in player_data.iter_mut() {
-            let mut validated_client_messages = Vec::with_capacity(messages.len());
+        for (client_id, data) in self.player_data.iter_mut() {
+            let mut validated_client_messages = Vec::with_capacity(common::BUFFER_CAPACITY);
             // godot_print!("Processing client {}", client_id);
-            for msg in messages.iter_mut() {
+            for msg in data.messages.iter_mut() {
                 // TODOs:
                 // Check if every message arrived (E.G.: Send tick count from client side and check here if (cur_msg.tick - prev_msg.tick) == 1)
                 // Check if messages are ordered
@@ -140,34 +134,52 @@ impl Server {
                 // Handle client data correctly (not just assume player starts from pos (0, 0))
                 // Spawn player on a server generated pos
                 // Actually instantiate and move a player object on server side aswell
-                if let common::ActionType::Movement(movement) = &msg.action {
-                    if (movement.input.0, movement.input.1) != (0, 0) {
-                        let dt = movement.cur_ts - movement.prev_ts;
-                        // assert!(dt > 0.0); // TODO!!!!!!!!!!
-                        let offset = Vector2::new(movement.input.0 as f32, movement.input.1 as f32)
-                            .normalized()
-                            * 100.0
-                            * dt as f32;
+                if let common::Action::Movement(movement) = msg {
+                    // Only check movement events which are not yet processed
+                    // TODO "if (movement.input.0, movement.input.1) != (0, 0)" <- looks like unnecessary
+                    if (movement.input.0, movement.input.1) != (0, 0)
+                        && movement.state == common::ActionState::SentByClient
+                    {
+                        common::player_movement(
+                            &mut data.player,
+                            movement.input,
+                            100.0,
+                            movement.delta,
+                        );
 
-                        // self.pos += offset;
+                        let new_player_pos = data.player.get_position();
+                        if new_player_pos.x != movement.pos.0 || new_player_pos.y != movement.pos.1
+                        {
+                            tracing::warn!(
+                                "Server and client position ({:?} != {:?}) does not match for player: {}",
+                                new_player_pos,
+                                movement.pos,
+                                client_id
+                            );
 
-                        msg.state = common::MessageState::ServerValidated;
+                            movement.pos = (new_player_pos.x, new_player_pos.y);
+                            // TODO: InvalidatedByServer? :D
+                            movement.state = common::ActionState::InValidatedByServer;
+                        } else {
+                            movement.state = common::ActionState::ValidatedByServer;
+                        }
+
+                        tracing::debug!("{:?}", new_player_pos);
 
                         validated_client_messages.push(msg.clone()); // TODO?
-
-                        tracing::debug!("{}", offset);
                     }
                 }
                 msg_cnt += 1;
             }
 
             // TODO: "Validated" messages are sent back to client but unhandled on client side
-            server.send_frame(*client_id, validated_client_messages);
+            self.server
+                .as_mut()
+                .unwrap()
+                .send_frame(*client_id, validated_client_messages);
 
             // This kind of iteration will be needed (uncomment itertools import if needed)
             // for (prev, next) in messages.iter().tuple_windows() {}
-
-            messages.clear();
         }
 
         msg_cnt

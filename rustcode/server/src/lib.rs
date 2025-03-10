@@ -60,13 +60,18 @@ impl Server {
             .collect()
     }
 
-    pub fn get_messages(&mut self, player_data: &mut HashMap<u64, Vec<common::Message>>) -> usize {
+    pub fn get_messages(
+        &mut self,
+        player_data: &mut HashMap<u64, common::ServerSidePlayerData>,
+    ) -> usize {
         let mut msg_cnt = 0;
 
         self.server.clients_id().iter().for_each(|client_id| {
-            if let Some(player_frames) = player_data.get_mut(client_id) {
+            if let Some(player_data) = player_data.get_mut(client_id) {
                 // Only get frames from a client if it is already went through the connection event
-                player_frames.extend(self.get_client_frames(*client_id));
+                player_data
+                    .messages
+                    .extend(self.get_client_frames(*client_id));
                 msg_cnt += 1;
             }
         });
@@ -74,7 +79,7 @@ impl Server {
         msg_cnt
     }
 
-    fn get_client_frames(&mut self, client_id: u64) -> Vec<common::Message> {
+    fn get_client_frames(&mut self, client_id: u64) -> Vec<common::Action> {
         let mut messages = vec![];
 
         while let Some(raw_message) = self
@@ -90,7 +95,7 @@ impl Server {
         messages
     }
 
-    pub fn send_frame(&mut self, client_id: u64, messages: Vec<common::Message>) {
+    pub fn send_frame(&mut self, client_id: u64, messages: Vec<common::Action>) {
         let frame = common::Frame::new(messages);
         let payload = bincode::options().serialize(&frame).unwrap();
         self.server

@@ -4,6 +4,7 @@ use std::{
     time::{Duration, SystemTime},
 };
 
+use bincode::Options;
 use renet::{ConnectionConfig, DefaultChannel, RenetClient};
 use renet_netcode::{ClientAuthentication, NetcodeClientTransport};
 use renet_visualizer::RenetClientVisualizer;
@@ -62,6 +63,18 @@ impl Client {
 
         if self.client.is_connected() {
             self.transport.send_packets(&mut self.client).unwrap();
+        }
+    }
+
+    pub fn get_messages(&mut self) -> Option<common::Frame> {
+        if let Some(payload) = self.client.receive_message(DefaultChannel::ReliableOrdered) {
+            if let Ok(frame) = bincode::options().deserialize::<common::Frame>(&payload) {
+                Some(frame)
+            } else {
+                None
+            }
+        } else {
+            None
         }
     }
 }
