@@ -5,11 +5,11 @@ use ringbuffer::{AllocRingBuffer, RingBuffer};
 #[derive(GodotClass)]
 #[class(base=CharacterBody2D)]
 pub struct Player {
+    #[export]
+    pub speed: f32,
     pub base: Base<CharacterBody2D>,
-    pub speed: f64,
-    pub input: (i8, i8),
-    pub delta: f64,
     pub tick: usize,
+    pub facing_right: bool,
     pub animator: Option<Gd<AnimatedSprite2D>>,
     pub actions: AllocRingBuffer<common::Action>,
 }
@@ -18,11 +18,10 @@ pub struct Player {
 impl ICharacterBody2D for Player {
     fn init(base: Base<CharacterBody2D>) -> Self {
         Self {
-            base,
             speed: 100.0,
-            input: (0, 0),
-            delta: 0.0,
+            base,
             tick: 0,
+            facing_right: true,
             animator: None,
             actions: AllocRingBuffer::new(common::BUFFER_CAPACITY),
         }
@@ -33,45 +32,45 @@ impl ICharacterBody2D for Player {
     }
 
     fn physics_process(&mut self, delta: f64) {
-        self.handle_input();
+        let (input_x, input_y) = self.handle_input();
 
         let animator = self.animator.as_mut().expect("Animator node not found!");
 
         // Update player position
-        if self.input == (0, 0) {
+        if (input_x, input_y) == (0, 0) {
             animator.set_animation("Idle"); // TODO Enum
         } else {
             animator.set_animation("Run");
-            animator.set_flip_h(self.input.0 <= 0);
+            if self.facing_right && input_x < 0 {
+                self.facing_right = false;
+            } else if !self.facing_right && input_x > 0 {
+                self.facing_right = true;
+            }
 
-            let offset = Vector2::new(self.input.0 as f32, self.input.1 as f32).normalized()
-                * self.speed as f32
-                * delta as f32;
+            animator.set_flip_h(!self.facing_right);
 
-            self.base_mut().move_and_collide(offset);
+            // TODO: #Rust :)
+            let speed = self.speed.clone();
+            common::player_movement(&mut self.base_mut(), (input_x, input_y), speed, delta);
 
             self.actions
                 .push(common::Action::Movement(common::Movement::new(
-                    self.tick, delta, self.input,
+                    self.tick,
+                    delta,
+                    (input_x, input_y),
+                    self.base().get_position(),
                 )));
 
-            tracing::debug!(
-                "{:?} ({:?}, {}, {})",
-                self.base().get_position(),
-                self.input,
-                self.speed,
-                delta
-            );
+            tracing::debug!("{:?}", self.base().get_position());
         }
 
-        self.delta = delta;
         self.tick += 1;
     }
 }
 
 #[godot_api]
 impl Player {
-    fn handle_input(&mut self) {
+    fn handle_input(&mut self) -> (i8, i8) {
         let mut input_x = 0;
         let mut input_y = 0;
         let input = Input::singleton();
@@ -92,6 +91,6 @@ impl Player {
             input_y += 1;
         }
 
-        self.input = (input_x, input_y)
+        (input_x, input_y)
     }
 }

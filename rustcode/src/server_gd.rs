@@ -13,6 +13,7 @@ use tracing_subscriber::EnvFilter;
 #[class(base=Node2D)]
 struct Server {
     server: Option<server::Server>,
+    player_scene: Gd<PackedScene>, // TODO: when networking is working/tested this should be a simple lightweight struct!
     player_data: HashMap<u64, common::ServerSidePlayerData>,
     tick: usize,
     base: Base<Node2D>,
@@ -25,6 +26,7 @@ impl INode2D for Server {
 
         Self {
             server: None,
+            player_scene: load::<PackedScene>(common::PLAYER_SCENE_PATH),
             player_data: HashMap::new(),
             tick: 0,
             base,
@@ -82,10 +84,11 @@ impl Server {
                     ServerEvent::ClientConnected { client_id } => {
                         tracing::info!("Client {} connected", client_id);
 
-                        let player_res = load::<PackedScene>("res://Scenes/Player.tscn");
-                        let player_obj = player_res.instantiate_as::<CharacterBody2D>();
-                        let player_data = common::ServerSidePlayerData::new(player_obj);
+                        let player_data = common::ServerSidePlayerData::new(
+                            self.player_scene.instantiate_as::<CharacterBody2D>(),
+                        );
 
+                        // Add player to the scene
                         self.base_mut().add_child(&player_data.player);
                         self.player_data.insert(*client_id, player_data);
                     }
@@ -128,25 +131,33 @@ impl Server {
                 // Spawn player on a server generated pos
                 // Actually instantiate and move a player object on server side aswell
                 if let common::Action::Movement(movement) = msg {
+                    // Only check movement events which are not yet processed
+                    // TODO "if (movement.input.0, movement.input.1) != (0, 0)" <- looks like unnecessary
                     if (movement.input.0, movement.input.1) != (0, 0)
                         && movement.state == common::ActionState::SentByClient
                     {
-                        let offset = Vector2::new(movement.input.0 as f32, movement.input.1 as f32)
-                            .normalized()
-                            * 100.0
-                            * movement.delta as f32;
 
-                        data.player.move_and_collide(offset);
+                        common::player_movement(&mut data.player, movement.input, 100.0, movement.delta);
 
-                        tracing::debug!(
-                            "{:?} ({:?}, {}, {})",
-                            data.player.get_position(),
-                            movement.input,
-                            100.0,
-                            movement.delta
-                        );
+                        let new_player_pos = data.player.get_position();
+                        if new_player_pos.x != movement.pos.0 || new_player_pos.y != movement.pos.1
+                        {
+                            tracing::warn!(
+                                "Server and client position ({:?} != {:?}) does not match for player: {}",
+                                new_player_pos,
+                                movement.pos,
+                                client_id
+                            );
 
-                        movement.state = common::ActionState::ValidatedByServer;
+                            movement.pos = (new_player_pos.x, new_player_pos.y);
+                            // TODO: InvalidatedByServer? :D
+                            movement.state = common::ActionState::InValidatedByServer;
+                        } else {
+                            movement.state = common::ActionState::ValidatedByServer;
+                        }
+
+                        tracing::debug!("{:?}", new_player_pos);
+
                         validated_client_messages.push(msg.clone()); // TODO?
                     }
                 }
