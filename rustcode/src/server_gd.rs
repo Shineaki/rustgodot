@@ -94,7 +94,11 @@ impl Server {
                     }
                     ServerEvent::ClientDisconnected { client_id, reason } => {
                         tracing::info!("Client {} disconnected, reason: {}", client_id, reason);
-                        self.player_data.remove(client_id);
+                        self.player_data
+                            .remove(client_id)
+                            .expect("Data for client_id should be there!")
+                            .player
+                            .queue_free();
                     }
                 }
             });
@@ -136,8 +140,12 @@ impl Server {
                     if (movement.input.0, movement.input.1) != (0, 0)
                         && movement.state == common::ActionState::SentByClient
                     {
-
-                        common::player_movement(&mut data.player, movement.input, 100.0, movement.delta);
+                        common::player_movement(
+                            &mut data.player,
+                            movement.input,
+                            100.0,
+                            movement.delta,
+                        );
 
                         let new_player_pos = data.player.get_position();
                         if new_player_pos.x != movement.pos.0 || new_player_pos.y != movement.pos.1
