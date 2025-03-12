@@ -59,6 +59,12 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
+[node name="CreateNewCharacterButton" type="Button" parent="CharacterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hygms")
+theme_override_font_sizes/font_size = 24
+text = "Create new character"
+
 [node name="PlayContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
@@ -70,6 +76,20 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 16
 alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PlayContainer"]
+layout_mode = 2
+
+[node name="LogoutButton" type="Button" parent="PlayContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hygms")
+theme_override_font_sizes/font_size = 48
+text = "Logout"
+
+[node name="Control" type="Control" parent="PlayContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PlayContainer"]
 layout_mode = 2
@@ -172,4 +192,5 @@ theme_override_fonts/font = ExtResource("1_hygms")
 theme_override_font_sizes/font_size = 20
 text = "Fetching data..."
 
+[connection signal="pressed" from="PlayContainer/VBoxContainer2/LogoutButton" to="." method="_on_logout_button_pressed"]
 [connection signal="pressed" from="PlayContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]

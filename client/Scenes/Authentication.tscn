@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbjv4ckay15if"]
+[gd_scene load_steps=8 format=3 uid="uid://dbjv4ckay15if"]
 
 [ext_resource type="Script" path="res://Scripts/Authentication.gd" id="1_lwovo"]
 [ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="2_44upm"]
+[ext_resource type="Script" path="res://addons/tattomoosa.spinner/spinner.gd" id="3_k4kwn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8x38w"]
 bg_color = Color(0.196078, 0.215686, 0.254902, 1)
@@ -34,7 +35,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8x38w")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="FormContainer" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 13
@@ -49,7 +50,7 @@ theme = SubResource("Theme_g2ene")
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="GameLabel" type="Label" parent="VBoxContainer"]
+[node name="GameLabel" type="Label" parent="FormContainer"]
 custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.721236, 0.599334, 0.44251, 1)
@@ -60,7 +61,7 @@ text = "RustGodotGame"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StateLabel" type="Label" parent="VBoxContainer"]
+[node name="StateLabel" type="Label" parent="FormContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_44upm")
@@ -68,7 +69,7 @@ theme_override_font_sizes/font_size = 32
 text = "Not signed in"
 horizontal_alignment = 1
 
-[node name="EmailInput" type="LineEdit" parent="VBoxContainer"]
+[node name="EmailInput" type="LineEdit" parent="FormContainer"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_44upm")
@@ -76,7 +77,7 @@ theme_override_font_sizes/font_size = 24
 placeholder_text = "email"
 alignment = 1
 
-[node name="PasswordInput" type="LineEdit" parent="VBoxContainer"]
+[node name="PasswordInput" type="LineEdit" parent="FormContainer"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_44upm")
@@ -85,12 +86,12 @@ placeholder_text = "password"
 alignment = 1
 secret = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="FormContainer"]
 layout_direction = 3
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="LoginButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="LoginButton" type="Button" parent="FormContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_44upm")
@@ -98,14 +99,14 @@ theme_override_font_sizes/font_size = 24
 shortcut = SubResource("Shortcut_w3vnm")
 text = "Login"
 
-[node name="SignupButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="SignupButton" type="Button" parent="FormContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_44upm")
 theme_override_font_sizes/font_size = 24
 text = "Register"
 
-[node name="ErrorLabel" type="Label" parent="VBoxContainer"]
+[node name="ErrorLabel" type="Label" parent="FormContainer"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98275, 4.74088e-06, 5.77569e-07, 1)
@@ -116,5 +117,93 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/LoginButton" to="." method="_on_login_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/SignupButton" to="." method="_on_signup_button_pressed"]
+[node name="SpinnerBox" type="HBoxContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -45.5
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="SpinnerBox2" type="VBoxContainer" parent="SpinnerBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SpinnerBox/SpinnerBox2"]
+layout_mode = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SpinnerBox/SpinnerBox2/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="SpinnerIcon" type="Range" parent="SpinnerBox/SpinnerBox2/VBoxContainer/HBoxContainer"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 2
+auto_translate_mode = 0
+editor_description = ""
+visible = true
+modulate = Color(1, 1, 1, 1)
+self_modulate = Color(1, 1, 1, 1)
+show_behind_parent = false
+top_level = false
+clip_children = 0
+light_mask = 1
+visibility_layer = 1
+z_index = 0
+z_as_relative = true
+y_sort_enabled = false
+texture_filter = 0
+texture_repeat = 0
+material = null
+use_parent_material = false
+clip_contents = true
+custom_minimum_size = Vector2(48, 48)
+layout_direction = 0
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 1
+size_flags_stretch_ratio = 1.0
+localize_numeral_system = true
+tooltip_text = ""
+focus_neighbor_left = NodePath("")
+focus_neighbor_top = NodePath("")
+focus_neighbor_right = NodePath("")
+focus_neighbor_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 0
+mouse_force_pass_scroll_events = true
+mouse_default_cursor_shape = 0
+theme = null
+theme_type_variation = &""
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 0.0
+exp_edit = false
+rounded = false
+allow_greater = false
+allow_lesser = false
+script = ExtResource("3_k4kwn")
+
+[node name="Label" type="Label" parent="SpinnerBox/SpinnerBox2/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_44upm")
+theme_override_font_sizes/font_size = 20
+text = "Authenticating from cache ..."
+
+[connection signal="pressed" from="FormContainer/HBoxContainer/LoginButton" to="." method="_on_login_button_pressed"]
+[connection signal="pressed" from="FormContainer/HBoxContainer/SignupButton" to="." method="_on_signup_button_pressed"]
