@@ -1,0 +1,175 @@
+[gd_scene load_steps=5 format=3 uid="uid://blbh3rcc55wdd"]
+
+[ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="1_hygms"]
+[ext_resource type="Script" path="res://Scripts/CharacterSelect.gd" id="1_sof67"]
+[ext_resource type="Script" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_6h06x"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b6soh"]
+bg_color = Color(0.196078, 0.215686, 0.254902, 1)
+
+[node name="CharacterSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sof67")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b6soh")
+
+[node name="CharacterContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftDiv" type="VBoxContainer" parent="CharacterContainer"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Spacer" type="Label" parent="CharacterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="Characters" type="Label" parent="CharacterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hygms")
+theme_override_font_sizes/font_size = 40
+text = "Characters"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Label" parent="CharacterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="PlayContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -46.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayContainer"]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="PlayContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hygms")
+theme_override_font_sizes/font_size = 48
+text = "Play"
+
+[node name="Control" type="Control" parent="PlayContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="SpinnerBox" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -45.5
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="SpinnerBox2" type="VBoxContainer" parent="SpinnerBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SpinnerBox/SpinnerBox2"]
+layout_mode = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SpinnerBox/SpinnerBox2/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="SpinnerIcon" type="Range" parent="SpinnerBox/SpinnerBox2/VBoxContainer/HBoxContainer"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 2
+auto_translate_mode = 0
+editor_description = ""
+visible = true
+modulate = Color(1, 1, 1, 1)
+self_modulate = Color(1, 1, 1, 1)
+show_behind_parent = false
+top_level = false
+clip_children = 0
+light_mask = 1
+visibility_layer = 1
+z_index = 0
+z_as_relative = true
+y_sort_enabled = false
+texture_filter = 0
+texture_repeat = 0
+material = null
+use_parent_material = false
+clip_contents = true
+custom_minimum_size = Vector2(48, 48)
+layout_direction = 0
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 1
+size_flags_stretch_ratio = 1.0
+localize_numeral_system = true
+tooltip_text = ""
+focus_neighbor_left = NodePath("")
+focus_neighbor_top = NodePath("")
+focus_neighbor_right = NodePath("")
+focus_neighbor_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 0
+mouse_force_pass_scroll_events = true
+mouse_default_cursor_shape = 0
+theme = null
+theme_type_variation = &""
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 0.0
+exp_edit = false
+rounded = false
+allow_greater = false
+allow_lesser = false
+script = ExtResource("4_6h06x")
+
+[node name="Label" type="Label" parent="SpinnerBox/SpinnerBox2/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hygms")
+theme_override_font_sizes/font_size = 20
+text = "Fetching data..."
+
+[connection signal="pressed" from="PlayContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]

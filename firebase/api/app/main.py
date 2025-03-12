@@ -1,3 +1,4 @@
+import platform
 from uuid import uuid4
 
 from app.auth_guard import get_user_token
@@ -7,10 +8,15 @@ from firebase_admin import credentials, firestore, initialize_app
 from google.cloud.firestore_v1.document import (DocumentReference,
                                                 DocumentSnapshot)
 
-cred = credentials.Certificate("sa.json")
-initialize_app(credential=cred)
-db = firestore.client()
+if platform.system() == "Windows":
+    # Ugly hack to enable myself to run this locally
+    cred = credentials.Certificate("sa.json")
+    initialize_app(credential=cred)
+else:
+    # When hosted on GCP, the credentials are automatically loaded
+    initialize_app()
 
+db = firestore.client()
 app = FastAPI()
 
 
@@ -62,4 +68,4 @@ async def list_characters_for_user(user=Depends(get_user_token)):
     # Explicitly defining types, because Google's Python SDK is not fully typed for some fucking reason (??)
     doc_ref: DocumentReference = db.collection("characters").document(player_id)
     doc: DocumentSnapshot = doc_ref.get()
-    return {"user": doc.to_dict()}
+    return doc.to_dict()

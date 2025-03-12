@@ -11,14 +11,14 @@ config_version=5
 [application]
 
 config/name="Godot"
-run/main_scene="res://Scenes/MainScene.tscn"
+run/main_scene="res://Scenes/Authentication.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Firebase="*res://addons/godot-firebase/firebase/firebase.tscn"
-UserData="*res://Scripts/UserData.gd"
+Globals="*res://Scripts/Globals.gd"
 
 [display]
 
