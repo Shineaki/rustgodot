@@ -17,7 +17,6 @@ func _ready() -> void:
 		$FormContainer.visible = true
 		$SpinnerBox.visible = false
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
 
