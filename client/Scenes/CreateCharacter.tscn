@@ -1,7 +1,7 @@
 [gd_scene load_steps=24 format=3 uid="uid://cj4ued30p447m"]
 
 [ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="1_edo0u"]
-[ext_resource type="Script" path="res://Scenes/CreateCharacter.gd" id="1_ft5eu"]
+[ext_resource type="Script" path="res://Scripts/CreateCharacter.gd" id="1_ft5eu"]
 [ext_resource type="Texture2D" uid="uid://41x16tl1vg17" path="res://game_assets/characters/elf_m_idle_anim_f0.png" id="2_u7ntb"]
 [ext_resource type="Texture2D" uid="uid://d3as26n5hnde8" path="res://game_assets/characters/elf_m_idle_anim_f1.png" id="3_fga8p"]
 [ext_resource type="Texture2D" uid="uid://qbg3w57rv5ob" path="res://game_assets/characters/elf_m_idle_anim_f2.png" id="4_fbuo8"]
@@ -167,7 +167,7 @@ layout_mode = 2
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_x8bk5")
 autoplay = "default"
-frame_progress = 0.514656
+frame_progress = 0.29121
 centered = false
 offset = Vector2(2.5, 0)
 
@@ -191,7 +191,7 @@ layout_mode = 2
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_bq6lu")
 autoplay = "default"
-frame_progress = 0.00869969
+frame_progress = 0.78528
 centered = false
 offset = Vector2(2.5, 0)
 
@@ -216,7 +216,7 @@ position = Vector2(2.5, 0)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_rqeav")
 autoplay = "default"
-frame_progress = 0.0568583
+frame_progress = 0.833441
 centered = false
 offset = Vector2(2.5, 0)
 
@@ -240,7 +240,7 @@ layout_mode = 2
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_wc1dy")
 autoplay = "default"
-frame_progress = 0.192714
+frame_progress = 0.969292
 centered = false
 offset = Vector2(2.5, 0)
 
