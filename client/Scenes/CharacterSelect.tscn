@@ -192,5 +192,6 @@ theme_override_fonts/font = ExtResource("1_hygms")
 theme_override_font_sizes/font_size = 20
 text = "Fetching data..."
 
+[connection signal="pressed" from="CharacterContainer/VBoxContainer/CreateNewCharacterButton" to="." method="_on_create_new_character_button_pressed"]
 [connection signal="pressed" from="PlayContainer/VBoxContainer2/LogoutButton" to="." method="_on_logout_button_pressed"]
 [connection signal="pressed" from="PlayContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]

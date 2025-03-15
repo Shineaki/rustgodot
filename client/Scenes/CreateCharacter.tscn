@@ -1,4 +1,106 @@
-[gd_scene format=3 uid="uid://cj4ued30p447m"]
+[gd_scene load_steps=24 format=3 uid="uid://cj4ued30p447m"]
+
+[ext_resource type="FontFile" uid="uid://d2g3jtwyqou3q" path="res://game_assets/fonts/monogram.ttf" id="1_edo0u"]
+[ext_resource type="Script" path="res://Scenes/CreateCharacter.gd" id="1_ft5eu"]
+[ext_resource type="Texture2D" uid="uid://41x16tl1vg17" path="res://game_assets/characters/elf_m_idle_anim_f0.png" id="2_u7ntb"]
+[ext_resource type="Texture2D" uid="uid://d3as26n5hnde8" path="res://game_assets/characters/elf_m_idle_anim_f1.png" id="3_fga8p"]
+[ext_resource type="Texture2D" uid="uid://qbg3w57rv5ob" path="res://game_assets/characters/elf_m_idle_anim_f2.png" id="4_fbuo8"]
+[ext_resource type="Texture2D" uid="uid://bhtmj1cxrtrj0" path="res://game_assets/characters/elf_m_idle_anim_f3.png" id="5_beos3"]
+[ext_resource type="Texture2D" uid="uid://dqhw2k4tqyak" path="res://game_assets/characters/wizzard_m_idle_anim_f0.png" id="6_t8bni"]
+[ext_resource type="Texture2D" uid="uid://bqjobq2ck7nj0" path="res://game_assets/characters/wizzard_m_idle_anim_f1.png" id="7_1ogly"]
+[ext_resource type="Texture2D" uid="uid://bqfwneha4x74w" path="res://game_assets/characters/wizzard_m_idle_anim_f2.png" id="8_ut6cf"]
+[ext_resource type="Texture2D" uid="uid://b0k87l6t2dgey" path="res://game_assets/characters/wizzard_m_idle_anim_f3.png" id="9_7q8sl"]
+[ext_resource type="Texture2D" uid="uid://xejm2u8te7uc" path="res://game_assets/characters/knight_m_idle_anim_f0.png" id="10_l7jn8"]
+[ext_resource type="Texture2D" uid="uid://b3j2h7v2mxvol" path="res://game_assets/characters/knight_m_idle_anim_f1.png" id="11_3a4tq"]
+[ext_resource type="Texture2D" uid="uid://e42bavurlk4x" path="res://game_assets/characters/knight_m_idle_anim_f2.png" id="12_pxmc1"]
+[ext_resource type="Texture2D" uid="uid://ccb4apmdga3p4" path="res://game_assets/characters/knight_m_idle_anim_f3.png" id="13_fsmr5"]
+[ext_resource type="Texture2D" uid="uid://5n8x47k0aep3" path="res://game_assets/characters/lizard_m_idle_anim_f0.png" id="14_bl87e"]
+[ext_resource type="Texture2D" uid="uid://haqgvxpq46w2" path="res://game_assets/characters/lizard_m_idle_anim_f1.png" id="15_51030"]
+[ext_resource type="Texture2D" uid="uid://b4phwkbqwpnpn" path="res://game_assets/characters/lizard_m_idle_anim_f2.png" id="16_o284i"]
+[ext_resource type="Texture2D" uid="uid://3iw2acteluh8" path="res://game_assets/characters/lizard_m_idle_anim_f3.png" id="17_rsiiq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_psrq0"]
+bg_color = Color(0.196078, 0.215686, 0.254902, 1)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x8bk5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_u7ntb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_fga8p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_fbuo8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_beos3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bq6lu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_t8bni")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_1ogly")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ut6cf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_7q8sl")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rqeav"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_l7jn8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_3a4tq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_pxmc1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_fsmr5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wc1dy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_bl87e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_51030")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_o284i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_rsiiq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
 
 [node name="CreateCharacter" type="Control"]
 layout_mode = 3
@@ -7,3 +109,189 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ft5eu")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_psrq0")
+
+[node name="Label" type="Label" parent="Background"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_right = 225.0
+offset_bottom = 100.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("1_edo0u")
+theme_override_font_sizes/font_size = 60
+text = "Create new character"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -19.0
+offset_right = 180.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Background/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="Elf" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer/Control"]
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_x8bk5")
+autoplay = "default"
+frame_progress = 0.514656
+centered = false
+offset = Vector2(2.5, 0)
+
+[node name="Label" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_edo0u")
+theme_override_font_sizes/font_size = 26
+text = "Elf"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(50, 150)
+layout_mode = 2
+
+[node name="Wizzard" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer2/Control"]
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_bq6lu")
+autoplay = "default"
+frame_progress = 0.00869969
+centered = false
+offset = Vector2(2.5, 0)
+
+[node name="Label2" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_edo0u")
+theme_override_font_sizes/font_size = 26
+text = "Wizzard"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer3"]
+custom_minimum_size = Vector2(50, 150)
+layout_mode = 2
+
+[node name="Knight" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer3/Control"]
+position = Vector2(2.5, 0)
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_rqeav")
+autoplay = "default"
+frame_progress = 0.0568583
+centered = false
+offset = Vector2(2.5, 0)
+
+[node name="Label2" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_edo0u")
+theme_override_font_sizes/font_size = 26
+text = "Knight"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(50, 150)
+layout_mode = 2
+
+[node name="Lizard" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer4/Control"]
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_wc1dy")
+autoplay = "default"
+frame_progress = 0.192714
+centered = false
+offset = Vector2(2.5, 0)
+
+[node name="Label2" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer4"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_edo0u")
+theme_override_font_sizes/font_size = 26
+text = "Lizard"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer1" type="Control" parent="Background/VBoxContainer"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_edo0u")
+theme_override_font_sizes/font_size = 36
+text = "Character Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer3" type="Control" parent="Background/VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="CharacterName" type="LineEdit" parent="Background/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_edo0u")
+theme_override_font_sizes/font_size = 28
+placeholder_text = "name"
+alignment = 1
+
+[node name="Spacer2" type="Control" parent="Background/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Background/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="BackButton" type="Button" parent="Background/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(75, 40)
+layout_mode = 2
+text = "Back"
+
+[node name="CreateButton" type="Button" parent="Background/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(75, 40)
+layout_mode = 2
+text = "Create"
+
+[connection signal="pressed" from="Background/VBoxContainer/HBoxContainer2/BackButton" to="." method="_on_back_button_pressed"]

@@ -62,3 +62,8 @@ func _http_request_completed(result, response_code, headers, body):
 func _on_logout_button_pressed() -> void:
 	Firebase.Auth.logout()
 	get_tree().change_scene_to_file("res://Scenes/Authentication.tscn")
+
+
+func _on_create_new_character_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/CreateCharacter.tscn")
+	
