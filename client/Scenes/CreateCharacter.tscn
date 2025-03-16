@@ -295,3 +295,4 @@ layout_mode = 2
 text = "Create"
 
 [connection signal="pressed" from="Background/VBoxContainer/HBoxContainer2/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="Background/VBoxContainer/HBoxContainer2/CreateButton" to="." method="_on_create_button_pressed"]
