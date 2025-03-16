@@ -151,27 +151,36 @@ grow_vertical = 2
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Background/VBoxContainer"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(100, 175)
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+[node name="ElfButton" type="Button" parent="Background/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 150)
-layout_mode = 2
+[node name="ElfVBox" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer/ElfButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Elf" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer/Control"]
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/ElfButton/ElfVBox"]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Elf" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/ElfButton/ElfVBox/Control"]
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_x8bk5")
 autoplay = "default"
 frame_progress = 0.29121
 centered = false
-offset = Vector2(2.5, 0)
+offset = Vector2(2, -3)
 
-[node name="Label" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Background/VBoxContainer/HBoxContainer/ElfButton/ElfVBox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_edo0u")
 theme_override_font_sizes/font_size = 26
@@ -179,23 +188,32 @@ text = "Elf"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+[node name="WizzardButton" type="Button" parent="Background/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(50, 150)
-layout_mode = 2
+[node name="WizzardVBox" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer/WizzardButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Wizzard" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer2/Control"]
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/WizzardButton/WizzardVBox"]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Wizzard" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/WizzardButton/WizzardVBox/Control"]
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_bq6lu")
 autoplay = "default"
 frame_progress = 0.78528
 centered = false
-offset = Vector2(2.5, 0)
+offset = Vector2(2, -3)
 
-[node name="Label2" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="Background/VBoxContainer/HBoxContainer/WizzardButton/WizzardVBox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_edo0u")
 theme_override_font_sizes/font_size = 26
@@ -203,24 +221,32 @@ text = "Wizzard"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+[node name="KnightButton" type="Button" parent="Background/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer3"]
-custom_minimum_size = Vector2(50, 150)
-layout_mode = 2
+[node name="KnightVBox" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer/KnightButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Knight" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer3/Control"]
-position = Vector2(2.5, 0)
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/KnightButton/KnightVBox"]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Knight" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/KnightButton/KnightVBox/Control"]
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_rqeav")
 autoplay = "default"
 frame_progress = 0.833441
 centered = false
-offset = Vector2(2.5, 0)
+offset = Vector2(2.5, -3)
 
-[node name="Label2" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label" type="Label" parent="Background/VBoxContainer/HBoxContainer/KnightButton/KnightVBox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_edo0u")
 theme_override_font_sizes/font_size = 26
@@ -228,27 +254,37 @@ text = "Knight"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer4" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer"]
+[node name="LizardButton" type="Button" parent="Background/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer4"]
-custom_minimum_size = Vector2(50, 150)
-layout_mode = 2
+[node name="LizardVBox" type="VBoxContainer" parent="Background/VBoxContainer/HBoxContainer/LizardButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Lizard" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer4/Control"]
+[node name="Control" type="Control" parent="Background/VBoxContainer/HBoxContainer/LizardButton/LizardVBox"]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Lizard" type="AnimatedSprite2D" parent="Background/VBoxContainer/HBoxContainer/LizardButton/LizardVBox/Control"]
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_wc1dy")
 autoplay = "default"
 frame_progress = 0.969292
 centered = false
-offset = Vector2(2.5, 0)
+offset = Vector2(2.5, -3)
 
-[node name="Label2" type="Label" parent="Background/VBoxContainer/HBoxContainer/VBoxContainer4"]
+[node name="Label" type="Label" parent="Background/VBoxContainer/HBoxContainer/LizardButton/LizardVBox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_edo0u")
 theme_override_font_sizes/font_size = 26
-text = "Lizard"
+text = "Lizard
+"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -294,5 +330,9 @@ custom_minimum_size = Vector2(75, 40)
 layout_mode = 2
 text = "Create"
 
+[connection signal="pressed" from="Background/VBoxContainer/HBoxContainer/ElfButton" to="." method="_on_type_button_pressed" binds= [0]]
+[connection signal="pressed" from="Background/VBoxContainer/HBoxContainer/WizzardButton" to="." method="_on_type_button_pressed" binds= [1]]
+[connection signal="pressed" from="Background/VBoxContainer/HBoxContainer/KnightButton" to="." method="_on_type_button_pressed" binds= [2]]
+[connection signal="pressed" from="Background/VBoxContainer/HBoxContainer/LizardButton" to="." method="_on_type_button_pressed" binds= [3]]
 [connection signal="pressed" from="Background/VBoxContainer/HBoxContainer2/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="Background/VBoxContainer/HBoxContainer2/CreateButton" to="." method="_on_create_button_pressed"]
