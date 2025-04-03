@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bykdfqsj8hw30" path="res://Scenes/Dungeon.tscn" id="2_hokww"]
 [ext_resource type="PackedScene" uid="uid://cy2klyltk2ucc" path="res://Scenes/Player.tscn" id="2_khxoa"]
-[ext_resource type="PackedScene" uid="uid://cqu121b1mfl7y" path="res://Scenes/Enemy.tscn" id="11_3d6qv"]
+[ext_resource type="Script" path="res://enemy_spawner.gd" id="4_7gvdi"]
 
 [node name="Client" type="Client"]
 
@@ -11,5 +11,5 @@
 [node name="Dungeon" parent="." instance=ExtResource("2_hokww")]
 z_index = -1
 
-[node name="Enemy" parent="." instance=ExtResource("11_3d6qv")]
-position = Vector2(-61, -26)
+[node name="EnemySpawner" type="Node" parent="."]
+script = ExtResource("4_7gvdi")
