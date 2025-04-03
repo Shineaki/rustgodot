@@ -5,8 +5,7 @@ from app.auth_guard import get_user_token
 from app.schemas.character import Character
 from fastapi import Depends, FastAPI
 from firebase_admin import credentials, firestore, initialize_app
-from google.cloud.firestore_v1.document import (DocumentReference,
-                                                DocumentSnapshot)
+from google.cloud.firestore_v1.document import DocumentReference, DocumentSnapshot
 
 if platform.system() == "Windows":
     # Ugly hack to enable myself to run this locally
