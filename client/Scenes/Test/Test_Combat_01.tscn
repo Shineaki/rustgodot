@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://dpmjjrg5rmq2y"]
+
+[ext_resource type="PackedScene" uid="uid://bykdfqsj8hw30" path="res://Scenes/Dungeon.tscn" id="1_h7pga"]
+[ext_resource type="PackedScene" uid="uid://cqu121b1mfl7y" path="res://Scenes/Enemy.tscn" id="2_x4wa6"]
+[ext_resource type="PackedScene" uid="uid://buw28pgmkgtkb" path="res://Scenes/Test/Test_Player_01.tscn" id="3_pdcdw"]
+[ext_resource type="PackedScene" uid="uid://5bdoforx2ea6" path="res://Scenes/Test/Test_Combat_UI_01.tscn" id="4_yfrig"]
+
+[node name="TestCombat01" type="Node2D"]
+
+[node name="Dungeon" parent="." instance=ExtResource("1_h7pga")]
+
+[node name="Enemy" parent="." instance=ExtResource("2_x4wa6")]
+
+[node name="TestPlayer01" parent="." instance=ExtResource("3_pdcdw")]
+position = Vector2(-58, -36)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TestCombatUi01" parent="CanvasLayer" instance=ExtResource("4_yfrig")]

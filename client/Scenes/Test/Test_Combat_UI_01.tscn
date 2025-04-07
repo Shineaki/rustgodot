@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=3 uid="uid://5bdoforx2ea6"]
+
+[ext_resource type="Texture2D" uid="uid://b31y7gq8cbjjl" path="res://game_assets/ui/HealthBar.png" id="1_mr6dy"]
+[ext_resource type="Script" path="res://Scenes/Test/take_damage.gd" id="2_ggqeb"]
+[ext_resource type="Script" path="res://Scenes/Test/health_bar.gd" id="2_r10oy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ltk0v"]
+atlas = ExtResource("1_mr6dy")
+region = Rect2(1, 35, 78, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7gadw"]
+atlas = ExtResource("1_mr6dy")
+region = Rect2(1, 19, 78, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b7lci"]
+atlas = ExtResource("1_mr6dy")
+region = Rect2(1, 3, 78, 10)
+
+[node name="TestCombatUi01" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Screen" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 100.0
+grow_horizontal = 2
+
+[node name="PlayerNode" type="Control" parent="Screen"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+script = ExtResource("2_r10oy")
+
+[node name="UnderBar" type="TextureProgressBar" parent="Screen/PlayerNode"]
+offset_right = 78.0
+offset_bottom = 10.0
+scale = Vector2(4, 4)
+value = 50.0
+texture_under = SubResource("AtlasTexture_ltk0v")
+texture_progress = SubResource("AtlasTexture_7gadw")
+tint_progress = Color(0.911952, 0, 0.420421, 1)
+
+[node name="OverBar" type="TextureProgressBar" parent="Screen/PlayerNode"]
+layout_mode = 0
+offset_right = 78.0
+offset_bottom = 10.0
+scale = Vector2(4, 4)
+value = 50.0
+texture_over = SubResource("AtlasTexture_b7lci")
+texture_progress = SubResource("AtlasTexture_7gadw")
+tint_progress = Color(1.15514e-06, 0.615113, 0.351666, 1)
+
+[node name="Timer" type="Timer" parent="Screen/PlayerNode"]
+wait_time = 3.0
+autostart = true
+script = ExtResource("2_ggqeb")
+
+[connection signal="timeout" from="Screen/PlayerNode/Timer" to="Screen/PlayerNode/Timer" method="_on_timeout"]
