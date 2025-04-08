@@ -1,9 +1,10 @@
 extends Control
 
 var value = 50
-
+var rnd: RandomNumberGenerator = null
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	rnd = RandomNumberGenerator.new();
 	pass # Replace with function body.
 
 
@@ -11,9 +12,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func take_damage(damage: int) -> void:
-		value -= damage
-		if value < 0:
+func take_damage() -> void:
+		value -= rnd.randi_range(5, 20)
+		if value <= 0:
 			value = 100
 			$UnderBar.value = value
 			$OverBar.value = value

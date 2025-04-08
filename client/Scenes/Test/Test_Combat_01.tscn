@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dpmjjrg5rmq2y"]
+[gd_scene load_steps=6 format=3 uid="uid://dpmjjrg5rmq2y"]
 
 [ext_resource type="PackedScene" uid="uid://bykdfqsj8hw30" path="res://Scenes/Dungeon.tscn" id="1_h7pga"]
 [ext_resource type="PackedScene" uid="uid://cqu121b1mfl7y" path="res://Scenes/Enemy.tscn" id="2_x4wa6"]
 [ext_resource type="PackedScene" uid="uid://buw28pgmkgtkb" path="res://Scenes/Test/Test_Player_01.tscn" id="3_pdcdw"]
+[ext_resource type="Script" path="res://Scenes/Test/UI_TopLevel.gd" id="4_0xcwb"]
 [ext_resource type="PackedScene" uid="uid://5bdoforx2ea6" path="res://Scenes/Test/Test_Combat_UI_01.tscn" id="4_yfrig"]
 
 [node name="TestCombat01" type="Node2D"]
@@ -15,5 +16,16 @@
 position = Vector2(-58, -36)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource("4_0xcwb")
 
-[node name="TestCombatUi01" parent="CanvasLayer" instance=ExtResource("4_yfrig")]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerUI" parent="CanvasLayer/HBoxContainer" instance=ExtResource("4_yfrig")]
+layout_mode = 2
+
+[node name="TargetUI" parent="CanvasLayer/HBoxContainer" instance=ExtResource("4_yfrig")]
+layout_mode = 2
+
+[connection signal="targeted" from="Enemy" to="CanvasLayer" method="_on_enemy_targeted"]

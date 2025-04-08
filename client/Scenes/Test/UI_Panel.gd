@@ -1,4 +1,4 @@
-extends Timer
+extends Control
 
 
 # Called when the node enters the scene tree for the first time.
@@ -10,6 +10,5 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func _on_timeout() -> void:
-	$"../Panel/Screen/HealthBar".take_damage()
-	$"../Panel/Screen/ResourceBar".take_damage()
+func set_panel_name(name: String) -> void:
+	$Panel/Screen/Label.text = name

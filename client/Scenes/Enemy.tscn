@@ -1,13 +1,38 @@
-[gd_scene load_steps=11 format=3 uid="uid://cqu121b1mfl7y"]
+[gd_scene load_steps=18 format=3 uid="uid://cqu121b1mfl7y"]
 
+[ext_resource type="Script" path="res://Scenes/Test/enemy.gd" id="1_oa38k"]
 [ext_resource type="Texture2D" uid="uid://crpafitiiqp6t" path="res://game_assets/characters/imp_idle_anim_f0.png" id="1_uebbk"]
+[ext_resource type="Texture2D" uid="uid://kvxvdj12c7iu" path="res://game_assets/ui/selected1.png" id="2_e34vw"]
 [ext_resource type="Texture2D" uid="uid://dsiy3fwiikugn" path="res://game_assets/characters/imp_idle_anim_f1.png" id="2_i2iu0"]
+[ext_resource type="Texture2D" uid="uid://cri56iu2xq17f" path="res://game_assets/ui/selected2.png" id="3_1s7ki"]
 [ext_resource type="Texture2D" uid="uid://cwpd22h8ii5e1" path="res://game_assets/characters/imp_idle_anim_f2.png" id="3_161b3"]
+[ext_resource type="Texture2D" uid="uid://dx0midplb4k8t" path="res://game_assets/ui/selected3.png" id="4_g71s7"]
 [ext_resource type="Texture2D" uid="uid://7rstydvrfeuf" path="res://game_assets/characters/imp_idle_anim_f3.png" id="4_pnne8"]
+[ext_resource type="Texture2D" uid="uid://dse6q6xtw7xap" path="res://game_assets/ui/selected4.png" id="5_5rhb1"]
 [ext_resource type="Texture2D" uid="uid://bgcpdod37k3ug" path="res://game_assets/characters/imp_run_anim_f0.png" id="5_l4oar"]
 [ext_resource type="Texture2D" uid="uid://cttisicqn33o8" path="res://game_assets/characters/imp_run_anim_f1.png" id="6_cl8od"]
 [ext_resource type="Texture2D" uid="uid://dwiv1oo12bese" path="res://game_assets/characters/imp_run_anim_f2.png" id="7_stis5"]
 [ext_resource type="Texture2D" uid="uid://crljmcbceo2vy" path="res://game_assets/characters/imp_run_anim_f3.png" id="8_2h404"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cl0sx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_e34vw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_1s7ki")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_g71s7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_5rhb1")
+}],
+"loop": true,
+"name": &"Selected",
+"speed": 10.0
+}]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_olow7"]
 animations = [{
@@ -46,17 +71,36 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c0yc7"]
-radius = 7.0
-height = 14.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_hhe1g"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6gop0"]
+radius = 5.38516
 
 [node name="Enemy" type="CharacterBody2D"]
+script = ExtResource("1_oa38k")
+
+[node name="SelectedAnimation" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_cl0sx")
+animation = &"Selected"
+autoplay = "Selected"
+offset = Vector2(0, 4)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_olow7")
 animation = &"Idle"
 autoplay = "Idle"
 
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 2)
+shape = SubResource("CircleShape2D_hhe1g")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
-shape = SubResource("CapsuleShape2D_c0yc7")
+shape = SubResource("CircleShape2D_6gop0")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
